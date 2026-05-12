@@ -54,8 +54,15 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
       {/* Body */}
       <div className="p-5 sm:p-6">
         {/* Origin & english name */}
-        <div className="flex items-center justify-between text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-2">
-          <span>📍 {variety.origin}</span>
+        <div className="flex items-center justify-between text-[14px] uppercase tracking-wider text-muted-foreground font-medium mb-2">
+          <span className='flex items-center gap-0'> 
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+	<path fill="#121313" d="M19 9A7 7 0 1 0 5 9c0 1.387.409 2.677 1.105 3.765h-.008L12 22l5.903-9.235h-.007A6.97 6.97 0 0 0 19 9m-7 3a3 3 0 1 1 0-6a3 3 0 0 1 0 6" stroke-width="0.5" stroke="#83CAFF" />
+</svg>
+
+
+
+             {variety.origin}</span>
           <span>{variety.nameEn}</span>
         </div>
 
@@ -94,20 +101,9 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
         </div>
 
         {/* Quantity selector */}
-        <div className="space-y-2">
-          <label className="text-[13px] uppercase tracking-wider text-muted-foreground font-medium flex items-center justify-between">
-            <span>অর্ডারের পরিমাণ নির্ধারণ করুন</span>
-            {isSelected && (
-              <button
-                onClick={() => onUpdateQuantity(0)}
-                className="inline-flex items-center gap-1 text-destructive hover:underline normal-case tracking-normal text-xs font-semibold"
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
-            )}
-          </label>
-
-          <div className="relative">
+        <div className="space-y-2 flex items-center justify-between gap-3">
+        
+          <div className="relative flex-1">
             <select
               value={quantity}
               onChange={(e) => onUpdateQuantity(Number(e.target.value))}
@@ -117,17 +113,30 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
                   : 'border-border bg-card text-foreground hover:border-foreground/30'
               }`}
             >
-              {!isSelected && <option value={0}>প্যাকেজ নির্বাচন করুন</option>}
+              {!isSelected && <option value={0}>অর্ডারের পরিমাণ নির্ধারণ করুন</option>}
               {QUANTITY_OPTIONS.map((qty) => (
                 <option key={qty} value={qty}>
                   {qty} কেজি — {(variety.price * qty).toLocaleString('bn-BD') } টাকা
                 </option>
               ))}
             </select>
+            
             <ChevronDown
               className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground/60 pointer-events-none"
               strokeWidth={2.5}
             />
+
+            
+          </div>
+          <div>
+              {isSelected && (
+              <button
+                onClick={() => onUpdateQuantity(0)}
+                className="inline-flex items-center gap-1 text-destructive hover:underline normal-case tracking-normal text-xs font-semibold"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
       </div>

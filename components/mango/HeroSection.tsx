@@ -1,53 +1,88 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
-import { ArrowRight, Leaf, ShieldCheck, Truck, Phone } from 'lucide-react'
+import { ArrowRight, Leaf, ShieldCheck, Truck, Phone, Menu, X } from 'lucide-react'
 
 interface HeroSectionProps {
   onShopNowClick: () => void
 }
 
+const NAV_LINKS = [
+  { href: '#products', label: 'আমাদের আম' },
+  { href: '#reviews', label: 'রিভিউ' },
+  { href: '#care-guide', label: 'যত্নের টিপস' },
+  { href: '#faq', label: 'FAQ' },
+]
+
 export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
-    <section className="relative w-full bg-background">
+    <>
       {/* Top navigation */}
       <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-              <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div> */}
             <div className="leading-tight">
               <p className="font-display text-lg sm:text-2xl font-medium text-foreground">রাজশাহী ম্যাঙ্গো</p>
               <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">Since 2025</p>
             </div>
           </div>
 
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-7 text-xl font-medium text-foreground/80">
-            <a href="#products" className="hover:text-primary">আম</a>
-            <a href="#about" className="hover:text-primary">আমরা</a>
-            <a href="#reviews" className="hover:text-primary">রিভিউ</a>
-            <a href="#faq" className="hover:text-primary">FAQ</a>
+            {NAV_LINKS.map((l) => (
+              <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
+            ))}
           </nav>
 
-          <a
-            href="tel:+8801700000000"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90"
-          >
-            <Phone className="w-4 h-4" />
-            <span className="hidden sm:inline">01782521705</span>
-          </a>
+          <div className="flex items-center gap-2">
+            <a
+              href="tel:+8801782521705"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90"
+            >
+              <Phone className="w-4 h-4" />
+              <span className="hidden sm:inline">01782521705</span>
+            </a>
+
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-border hover:bg-muted transition-colors"
+              aria-label="মেনু"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile dropdown */}
+        {menuOpen && (
+          <nav className="md:hidden border-t border-border/60 bg-background/95 backdrop-blur-md px-4 py-3 flex flex-col gap-1">
+            {NAV_LINKS.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className="px-3 py-3 rounded-xl text-base font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+              >
+                {l.label}
+              </a>
+            ))}
+          </nav>
+        )}
       </header>
 
       {/* Hero content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 lg:py-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 lg:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left: copy */}
           <div className="order-2 lg:order-1">
             <div className="eyebrow mb-6">
-              <span className="w-8 h-px  bg-primary" />
-          <h2 className='text-lg font-medium'>    মৌসুমের সেরা সংগ্রহ</h2>
+              <span className="w-8 h-px bg-secondary" />
+              <h2 className="text-lg font-medium text-secondary">মৌসুমের সেরা সংগ্রহ</h2>
+              <span className="w-8 h-px bg-secondary" />
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-foreground leading-[1.05] mb-6">
@@ -56,7 +91,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
             </h1>
 
             <p className="text-base sm:text-lg text-foreground/70 leading-relaxed mb-8 max-w-xl">
-             রাজশাহীর বিখ্যাত আম বাগান থেকে হাতে বাছাই করা — কার্বাইড ও ফরমালিনমুক্ত, প্রাকৃতিকভাবে পাকানো তাজা ও সুস্বাদু আম সরাসরি আপনার ঘরে।
+            রাজশাহীর সেরা আম বাগান থেকে সংগ্রহ করা বাছাইকৃত ফ্রেশ আম, <br/> নিরাপদ প্যাকেজিংয়ের মাধ্যমে দেশের নিকটস্থ কুরিয়ার সার্ভিসে দ্রুত পাঠানো হয়।
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
@@ -71,31 +106,31 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
                 href="https://wa.me/8801700000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border-2 border-foreground/15 text-foreground font-medium text-base hover:border-foreground/40 hover:bg-foreground/5"
+                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border-2 border-secondary/30 text-secondary font-medium text-base hover:border-secondary hover:bg-secondary/8"
               >
                 হোয়াটসঅ্যাপে অর্ডার
               </a>
             </div>
 
             {/* Trust strip */}
-            <div className="grid grid-cols-3 gap-4 max-w-max">
+            {/* <div className="grid grid-cols-3 gap-4 max-w-max">
               {[
-                { Icon: Leaf, label: '১০০% অর্গানিক আম' },
-                { Icon: ShieldCheck, label: 'নিরাপদ ও কেমিক্যালমুক্ত' },
-                { Icon: Truck, label: 'দ্রুত ডেলিভারি' },
-              ].map(({ Icon, label }) => (
-                <div key={label} className="flex items-center gap-2  ">
-                  <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-primary" />
+                { Icon: Leaf, label: '১০০% অর্গানিক আম', green: true },
+                { Icon: ShieldCheck, label: 'নিরাপদ ও কেমিক্যালমুক্ত', green: true },
+                { Icon: Truck, label: 'দ্রুত ডেলিভারি', green: false },
+              ].map(({ Icon, label, green }) => (
+                <div key={label} className="flex items-center gap-2">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${green ? 'bg-secondary/10' : 'bg-muted'}`}>
+                    <Icon className={`w-4 h-4 ${green ? 'text-secondary' : 'text-primary'}`} />
                   </div>
                   <p className="text-sm font-medium text-foreground/80 leading-tight">{label}</p>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Right: real photograph */}
-          <div className="order-1 lg:order-2 relative">
+          <div className="hidden lg:block order-1 lg:order-2 relative">
             <div className="relative aspect-4/5 sm:aspect-5/6 rounded-2xl overflow-hidden card-elevated">
               <Image
                 src="/mangoImage/ban/himsagor.JPG.jpeg"
@@ -149,6 +184,6 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
           </div>
         </div>
       </div>
-    </section>
+    </>
   )
 }

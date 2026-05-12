@@ -6,7 +6,9 @@ import type { CartItem } from '@/app/page'
 
 interface ProductSectionProps {
   cart: Map<string, CartItem>
-  updateCart: (variety: string, quantity: number, price: number) => void
+  updateCart: (variety: string, quantity: number) => void
+  deliveryType: 'courier' | 'home'
+  pricePerKg: number
 }
 
 const MANGO_VARIETIES = [
@@ -22,7 +24,7 @@ const MANGO_VARIETIES = [
       'অত্যন্ত মিষ্টি ও সুগন্ধি',
       'আঁশ কম, শাঁস নরম',
       'মাঝারি সাইজের ও রসালো',
-      'খেতে খুবই স্মুথ ও মুখে গলে যায়',
+    
     ],
     image: '/mangoImage/Gopalvog_1.png',
     badge: 'প্রিমিয়াম',
@@ -39,7 +41,7 @@ const MANGO_VARIETIES = [
       'প্রায় আঁশবিহীন',
       'গাঢ় হলুদ শাঁস ও দারুণ মিষ্টি স্বাদ',
       'পাতলা আঁটি, বেশি শাঁস',
-      'সুগন্ধ ও স্বাদের জন্য খুব বিখ্যাত',
+      
     ],
     image: '/mangoImage/Himsagor_1.png',
     badge: 'জনপ্রিয়',
@@ -56,7 +58,7 @@ const MANGO_VARIETIES = [
       'আকারে বড় ও দেখতে আকর্ষণীয়',
       'মিষ্টি ও হালকা টক স্বাদের ব্যালেন্স',
       'শাঁস নরম ও রসালো',
-      'অতিথি আপ্যায়ন ও উপহারের জন্য জনপ্রিয়',
+    
     ],
     image: '/mangoImage/rani_pochondo.webp',
     badge: 'বিশেষ',
@@ -73,7 +75,7 @@ const MANGO_VARIETIES = [
       'হালকা সবুজ রঙ থাকলেও ভেতরে পাকা ও মিষ্টি',
       'আঁশ কম ও শাঁস ঘন',
       'টক-মিষ্টির দারুণ কম্বিনেশন',
-      'আমপ্রেমীদের অন্যতম পছন্দ',
+    
     ],
     image: '/mangoImage/Gopalvog_2.png',
   },
@@ -89,7 +91,6 @@ const MANGO_VARIETIES = [
       'ছোট থেকে মাঝারি সাইজের',
       'অত্যন্ত মিষ্টি ও গাঢ় কমলা শাঁস',
       'আঁটি ছোট, তাই শাঁস বেশি',
-      'দীর্ঘসময় সংরক্ষণ করা যায়',
     ],
     image: '/mangoImage/amrupali.png',
     badge: 'অর্গানিক',
@@ -106,14 +107,13 @@ const MANGO_VARIETIES = [
       'দেরিতে বাজারে আসে',
       'মিষ্টি ও রসালো',
       'জুস, আমসত্ত্ব ও প্রসেসিংয়ের জন্য আদর্শ',
-      'একটি আমেই পুরো পরিবার খেতে পারে',
     ],
     image: '/mangoImage/Himsagor_2.png',
     badge: 'ফ্যামিলি প্যাক',
   },
 ]
 
-export default function ProductSection({ cart, updateCart }: ProductSectionProps) {
+export default function ProductSection({ cart, updateCart, pricePerKg }: ProductSectionProps) {
   return (
     <section id="products" className="relative py-20 sm:py-28 px-4 sm:px-6 border-t border-border/40">
       <div className="max-w-7xl mx-auto">
@@ -137,7 +137,9 @@ export default function ProductSection({ cart, updateCart }: ProductSectionProps
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              সর্বনিম্ন ১০ কেজি অর্ডার · ৳ ৮০/কেজি
+              <p className='text-xl font-medium'>
+                সর্বনিম্ন অর্ডার ১০ কেজি  
+              </p>
             </div>
           </div>
         </div>
@@ -151,9 +153,9 @@ export default function ProductSection({ cart, updateCart }: ProductSectionProps
             return (
               <ProductCard
                 key={mango.id}
-                variety={mango}
+                variety={{ ...mango, price: pricePerKg }}
                 quantity={quantity}
-                onUpdateQuantity={(qty) => updateCart(mango.id, qty, mango.price)}
+                onUpdateQuantity={(qty) => updateCart(mango.id, qty)}
               />
             )
           })}

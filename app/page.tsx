@@ -24,14 +24,19 @@ export interface CartItem {
 export interface OrderData {
   fullName: string
   phone: string
+  deliveryType: 'courier' | 'home'
   address: string
   city: string
   deliveryDate: string
   notes?: string
 }
 
+const COURIER_PRICE_PER_KG = 80
+const HOME_PRICE_PER_KG = 95
+
 export default function Home() {
   const [cart, setCart] = useState<Map<string, CartItem>>(new Map())
+  const [deliveryType, setDeliveryType] = useState<'courier' | 'home'>('courier')
   const [submittedOrder, setSubmittedOrder] = useState<{
     items: CartItem[]
     orderData: OrderData
@@ -42,13 +47,25 @@ export default function Home() {
   const checkoutRef = useRef<HTMLDivElement>(null)
   const confirmationRef = useRef<HTMLDivElement>(null)
 
-  const updateCart = (variety: string, quantity: number, price: number) => {
+  const pricePerKg = deliveryType === 'home' ? HOME_PRICE_PER_KG : COURIER_PRICE_PER_KG
+
+  const updateCart = (variety: string, quantity: number) => {
     const newCart = new Map(cart)
     if (quantity === 0) {
       newCart.delete(variety)
     } else {
-      newCart.set(variety, { variety, quantity, price })
+      newCart.set(variety, { variety, quantity, price: pricePerKg })
     }
+    setCart(newCart)
+  }
+
+  const handleDeliveryTypeChange = (type: 'courier' | 'home') => {
+    setDeliveryType(type)
+    // update existing cart items with new price
+    const newCart = new Map<string, CartItem>()
+    cart.forEach((item, key) => {
+      newCart.set(key, { ...item, price: type === 'home' ? HOME_PRICE_PER_KG : COURIER_PRICE_PER_KG })
+    })
     setCart(newCart)
   }
 
@@ -71,23 +88,23 @@ export default function Home() {
   const handlePlaceAnotherOrder = () => {
     setCart(new Map())
     setSubmittedOrder(null)
+    setDeliveryType('courier')
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const subtotal = Array.from(cart.values()).reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const deliveryFee = subtotal >= 1500 ? 0 : 100
-  const total = subtotal + deliveryFee
+  const total = subtotal
   const hasOrdered = submittedOrder !== null
   const hasItems = cart.size > 0
 
   return (
-    <main className="w-full min-h-screen bg-background overflow-x-hidden">
+    <main className="w-full min-h-screen bg-background">
       <HeroSection onShopNowClick={scrollToProducts} />
 
       {/* <StatsBar /> */}
 
       <div ref={productSectionRef}>
-        <ProductSection cart={cart} updateCart={updateCart} />
+        <ProductSection cart={cart} updateCart={updateCart} deliveryType={deliveryType} pricePerKg={pricePerKg} />
       </div>
 
       {/* <AboutSection /> */}
@@ -100,17 +117,18 @@ export default function Home() {
 
       <MangoCareGuide />
 
-      {/* Inline checkout — only when there are items and not yet ordered */}
       {hasItems && !hasOrdered && (
         <div ref={checkoutRef}>
           <ShippingForm
             onSubmit={handleFormSubmit}
-            orderSummary={{ subtotal, deliveryFee, total }}
+            deliveryType={deliveryType}
+            onDeliveryTypeChange={handleDeliveryTypeChange}
+            orderSummary={{ subtotal, total }}
           />
+
         </div>
       )}
 
-      {/* Inline confirmation */}
       {hasOrdered && submittedOrder && (
         <div ref={confirmationRef}>
           <OrderConfirmation
@@ -126,13 +144,12 @@ export default function Home() {
 
       <Footer />
 
-      {/* Sticky cart bar — only visible while shopping (before order placed) */}
       {!hasOrdered && (
         <OrderSummary
           cart={cart}
           subtotal={subtotal}
-          deliveryFee={deliveryFee}
           total={total}
+          deliveryType={deliveryType}
           onProceedClick={scrollToCheckout}
         />
       )}

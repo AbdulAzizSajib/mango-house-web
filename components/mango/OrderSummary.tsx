@@ -1,6 +1,7 @@
 'use client'
 
-import { ShoppingBag, ArrowRight, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
+import { ShoppingBag, ArrowRight, AlertCircle, ChevronUp, ChevronDown } from 'lucide-react'
 import type { CartItem } from '@/app/page'
 
 const MIN_ORDER_KG = 10
@@ -17,95 +18,108 @@ const VARIETY_BN: Record<string, string> = {
 interface OrderSummaryProps {
   cart: Map<string, CartItem>
   subtotal: number
-  deliveryFee: number
   total: number
+  deliveryType: 'courier' | 'home'
   onProceedClick: () => void
 }
 
-export default function OrderSummary({
-  cart,
-  subtotal,
-  deliveryFee,
-  total,
-  onProceedClick,
-}: OrderSummaryProps) {
+export default function OrderSummary({ cart, subtotal, total, deliveryType, onProceedClick }: OrderSummaryProps) {
+  const [expanded, setExpanded] = useState(false)
+
   const isEmpty = cart.size === 0
-  const totalItems = Array.from(cart.values()).reduce((sum, item) => sum + item.quantity, 0)
-  const belowMin = totalItems < MIN_ORDER_KG
-  const remaining = MIN_ORDER_KG - totalItems
+  const totalKg = Array.from(cart.values()).reduce((sum, item) => sum + item.quantity, 0)
+  const belowMin = totalKg < MIN_ORDER_KG
+  const remaining = MIN_ORDER_KG - totalKg
+  const items = Array.from(cart.values())
 
   if (isEmpty) return null
 
+  const deliveryLabel = deliveryType === 'home' ? 'হোম ডেলিভারি · ৳৯৫/কেজি' : 'কুরিয়ার কালেক্ট · ৳৮০/কেজি'
+
   return (
-    <div className="sticky bottom-0 left-0 right-0 z-40">
-      {/* Minimum order warning */}
-      {belowMin && (
-        <div className="bg-primary/95 text-primary-foreground border-b border-primary/20 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-center gap-2 text-sm font-semibold">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>সর্বনিম্ন ১০ কেজি অর্ডার করতে হবে — আরো <span className="font-bold underline">{remaining} কেজি</span> যোগ করুন</span>
+    <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-sm">
+      <div className="rounded-2xl border border-border bg-card shadow-[0_8px_40px_rgba(31,20,7,0.18)] overflow-hidden">
+
+        {/* Header — always visible */}
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="w-full flex items-center gap-3 px-4 py-3.5 bg-card hover:bg-muted/40 transition-colors"
+        >
+          <div className="relative shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <ShoppingBag className="w-5 h-5 text-primary" />
+            </div>
+            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-medium flex items-center justify-center">
+              {cart.size}
+            </span>
           </div>
-        </div>
-      )}
 
-      <div className="bg-card border-t border-border shadow-[0_-12px_40px_rgba(31,20,7,0.12)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-4 sm:gap-6 items-center">
-            {/* Items */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="shrink-0 w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center relative">
-                <ShoppingBag className="w-5 h-5 text-primary" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
-                  {cart.size}
-                </span>
+          <div className="flex-1 min-w-0 text-left">
+            <p className="text-[16px] text-muted-foreground font-semibold uppercase tracking-wider">
+              আপনার কার্ট {totalKg} কেজি
+            </p>
+            <p className="font-display text-lg font-medium text-foreground leading-none mt-0.5">
+              ৳ {total.toLocaleString()}
+            </p>
+          </div>
+
+          <div className="shrink-0 text-muted-foreground">
+            {expanded ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+          </div>
+        </button>
+
+        {/* Expanded panel */}
+        {expanded && (
+          <div className="border-t border-border/60 px-4 pb-4 pt-3 space-y-3">
+
+            {belowMin && (
+              <div className="flex items-start gap-2 bg-primary/10 text-primary rounded-xl px-3 py-2.5 text-xs font-semibold">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>সর্বনিম্ন ১০ কেজি — আরো <span className="underline font-medium">{remaining} কেজি</span> যোগ করুন</span>
               </div>
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                  আপনার কার্ট
-                </p>
-                <p className="font-semibold text-foreground text-sm truncate">
-                  {totalItems} কেজি · {Array.from(cart.values()).map((i) => VARIETY_BN[i.variety] || i.variety).join(', ')}
-                </p>
+            )}
+
+            {/* Items list */}
+            <div className="space-y-1.5">
+              {items.map((item) => (
+                <div key={item.variety} className="flex justify-between items-center text-sm">
+                  <span className="text-foreground/80">
+                    {VARIETY_BN[item.variety] || item.variety} · {item.quantity} কেজি
+                  </span>
+                  <span className="font-semibold text-foreground">
+                    ৳ {(item.price * item.quantity).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div className="border-t border-border/50 pt-2 space-y-1 text-sm">
+              <div className="flex justify-between text-foreground/70">
+                <span>ডেলিভারি ধরন</span>
+                <span className="text-foreground font-medium">{deliveryLabel}</span>
+              </div>
+              <div className="flex justify-between font-medium text-foreground pt-1 border-t border-border/50">
+                <span>সর্বমোট</span>
+                <span className="font-display text-lg">৳ {total.toLocaleString()}</span>
               </div>
             </div>
 
-            {/* Total */}
-            <div className="hidden sm:block text-right pr-6 border-r border-border">
-              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">সর্বমোট</p>
-              <p className="font-display text-2xl font-bold text-foreground leading-none mt-1">
-                ৳ {total.toLocaleString()}
-              </p>
-              {deliveryFee === 0 && !belowMin && (
-                <p className="text-[11px] text-secondary font-semibold mt-1">✓ ফ্রি ডেলিভারি</p>
-              )}
-            </div>
-
-            {/* Mobile total */}
-            <div className="sm:hidden flex items-center justify-between border-t border-border pt-3">
-              <div>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">সর্বমোট</p>
-                <p className="font-display text-xl font-bold text-foreground">৳ {total.toLocaleString()}</p>
-              </div>
-              {deliveryFee === 0 && !belowMin && (
-                <p className="text-xs text-secondary font-semibold">✓ ফ্রি ডেলিভারি</p>
-              )}
-            </div>
-
-            {/* Action */}
+            {/* CTA */}
             <button
-              onClick={onProceedClick}
+              onClick={() => { setExpanded(false); onProceedClick() }}
               disabled={belowMin}
-              className={`group inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3.5 rounded-full font-bold text-sm ${
+              className={`group w-full flex items-center justify-center gap-2 py-3.5 rounded-full font-medium text-sm transition-all ${
                 belowMin
                   ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                  : 'bg-primary text-primary-foreground hover:bg-primary/90 card-elevated hover:scale-[1.02]'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] shadow-md'
               }`}
             >
-              অর্ডার সম্পন্ন করুন
+              অর্ডার নিশ্চিত করুন
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

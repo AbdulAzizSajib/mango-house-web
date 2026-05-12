@@ -1,4 +1,4 @@
-import { Leaf, Phone, Mail, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react'
+import { Leaf, Phone, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -61,13 +61,10 @@ export default function Footer() {
                 <Phone className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
                 <a href="tel:+8801782521705" className="hover:text-background">০১৭৮২-৫২১৭০৫</a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Mail className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                <a href="mailto:hello@mangohouse.bd" className="hover:text-background">hello@mangohouse.bd</a>
-              </li>
+
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                <span>মেরুল বাড্ডা, ঢাকা ১২১২</span>
+                <a href="https://www.rajshahimango.site/" target="_blank" rel="noopener noreferrer" className="hover:text-background break-all">www.rajshahimango.site</a>
               </li>
             </ul>
           </div>
