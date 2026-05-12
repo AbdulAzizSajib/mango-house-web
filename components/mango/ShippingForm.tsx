@@ -1,20 +1,22 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { User, Phone, MapPin, Building2, Calendar, FileText, ShieldCheck, AlertCircle, Truck, Store } from 'lucide-react'
+import { postOrder } from '@/lib/api'
+import { useCartStore } from '@/store/useCartStore'
 import type { OrderData } from '@/app/page'
 
 interface ShippingFormProps {
-  onSubmit: (data: OrderData) => void
   deliveryType: 'courier' | 'home'
   onDeliveryTypeChange: (type: 'courier' | 'home') => void
   orderSummary: {
     subtotal: number
     total: number
   }
+  onOrderSuccess: () => void
 }
 
 const baseSchema = {
@@ -47,10 +49,16 @@ const CITIES = [
   { value: 'Rangpur', label: 'রংপুর' },
 ]
 
-export default function ShippingForm({ onSubmit, deliveryType, onDeliveryTypeChange, orderSummary }: ShippingFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export default function ShippingForm({ deliveryType, onDeliveryTypeChange, orderSummary, onOrderSuccess }: ShippingFormProps) {
+  const { cart, setSubmittedOrder } = useCartStore()
 
-  const schema = formSchema
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: postOrder,
+    onSuccess: (res) => {
+      setSubmittedOrder(res.data)
+      onOrderSuccess()
+    },
+  })
 
   const {
     register,
@@ -58,7 +66,7 @@ export default function ShippingForm({ onSubmit, deliveryType, onDeliveryTypeCha
     setValue,
     formState: { errors },
   } = useForm<OrderData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formSchema),
     mode: 'onBlur',
     defaultValues: { deliveryType },
   })
@@ -68,11 +76,19 @@ export default function ShippingForm({ onSubmit, deliveryType, onDeliveryTypeCha
     setValue('deliveryType', type)
   }
 
-  const onFormSubmit = async (data: OrderData) => {
-    setIsSubmitting(true)
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    onSubmit({ ...data, deliveryType })
-    setIsSubmitting(false)
+  const onFormSubmit = (data: OrderData) => {
+    const items = Array.from(cart.values()).map((i) => ({
+      variety: i.variety,
+      quantity: i.quantity,
+      price: i.price,
+    }))
+    mutate({
+      ...data,
+      deliveryType,
+      subtotal: orderSummary.subtotal,
+      total: orderSummary.total,
+      items,
+    })
   }
 
   const inputClass =
@@ -249,12 +265,19 @@ export default function ShippingForm({ onSubmit, deliveryType, onDeliveryTypeCha
             </div>
 
             {/* Submit */}
+            {isError && (
+              <p className="text-destructive text-sm flex items-center gap-1.5">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                {(error as Error)?.message || 'অর্ডার পাঠাতে সমস্যা হয়েছে, আবার চেষ্টা করুন'}
+              </p>
+            )}
+
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isPending}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-4 rounded-full text-lg card-elevated disabled:opacity-50 hover:scale-[1.01]"
             >
-              {isSubmitting ? 'প্রসেস হচ্ছে...' : 'অর্ডার নিশ্চিত করুন'}
+              {isPending ? 'প্রসেস হচ্ছে...' : 'অর্ডার নিশ্চিত করুন'}
             </button>
 
             <p className="text-center text-sm text-muted-foreground pt-1 flex items-center justify-center gap-1.5">

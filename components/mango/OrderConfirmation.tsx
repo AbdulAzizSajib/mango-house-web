@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Check, MessageCircle, RotateCw, MapPin, Calendar, Phone, ShoppingBag } from 'lucide-react'
-import type { CartItem } from '@/app/page'
-import type { OrderData } from '@/app/page'
+import type { OrderResponse } from '@/lib/api'
 
 const VARIETY_BN: Record<string, string> = {
   gopalbhog: 'গোপালভোগ',
@@ -26,23 +25,18 @@ const CITY_BN: Record<string, string> = {
 }
 
 interface OrderConfirmationProps {
-  items: CartItem[]
-  orderData: OrderData
-  total: number
+  order: OrderResponse['data']
   onPlaceAnotherOrder: () => void
 }
 
-export default function OrderConfirmation({
-  items,
-  orderData,
-  total,
-  onPlaceAnotherOrder,
-}: OrderConfirmationProps) {
+export default function OrderConfirmation({ order, onPlaceAnotherOrder }: OrderConfirmationProps) {
   const [showAnimation, setShowAnimation] = useState(false)
 
   useEffect(() => {
     setShowAnimation(true)
   }, [])
+
+  const { items, total, fullName, phone, address, city, deliveryDate, notes } = order
 
   return (
     <section id="confirmation" className="relative py-20 sm:py-24 px-4 sm:px-6 border-t border-border/40 bg-muted/20">
@@ -57,13 +51,13 @@ export default function OrderConfirmation({
         {/* Headline */}
         <div className="text-center mb-10">
           <h1 className="font-display text-4xl sm:text-5xl font-medium text-foreground mb-3 leading-tight">
-            অর্ডার <span className=" text-primary">নিশ্চিত</span>
+            অর্ডার <span className="text-primary">নিশ্চিত</span>
           </h1>
           <p className="text-lg text-foreground/70 mb-1">
             রাজশাহী ম্যাঙ্গোকে বেছে নেওয়ার জন্য ধন্যবাদ
           </p>
           <p className="text-foreground/60 text-sm">
-            ডেলিভারির বিস্তারিত জানতে আমরা <span className="font-medium text-foreground">{orderData.phone}</span> নম্বরে কল করব
+            ডেলিভারির বিস্তারিত জানতে আমরা <span className="font-medium text-foreground">{phone}</span> নম্বরে কল করব
           </p>
         </div>
 
@@ -76,9 +70,9 @@ export default function OrderConfirmation({
             </h2>
             <div className="space-y-3">
               {items.map((item) => (
-                <div key={item.variety} className="flex justify-between items-center">
+                <div key={item.id} className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium text-foreground">{VARIETY_BN[item.variety] || item.variety}</p>
+                    <p className="font-medium text-foreground">{VARIETY_BN[item.variety.toLowerCase()] || item.variety}</p>
                     <p className="text-xs text-muted-foreground">{item.quantity} কেজি × ৳ {item.price}</p>
                   </div>
                   <p className="font-medium text-foreground">
@@ -92,21 +86,19 @@ export default function OrderConfirmation({
           {/* Delivery */}
           <div className="mb-6 pb-6 border-b border-border/60">
             <h2 className="font-display text-xl font-medium text-foreground mb-4 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary" /> ডেলিভারি ঠিকানা
+              <MapPin className="w-5 h-5 text-primary" /> ডেলিভারি তথ্য
             </h2>
             <div className="space-y-2 text-sm text-foreground/80">
-              <p><span className="font-medium text-foreground">নাম:</span> {orderData.fullName}</p>
-              <p className="flex items-start gap-2"><Phone className="w-3.5 h-3.5 mt-1 text-muted-foreground" /> {orderData.phone}</p>
-              <p className="flex items-start gap-2"><MapPin className="w-3.5 h-3.5 mt-1 text-muted-foreground" /> {orderData.address}, {CITY_BN[orderData.city] || orderData.city}</p>
+              <p><span className="font-medium text-foreground">নাম:</span> {fullName}</p>
+              <p className="flex items-start gap-2"><Phone className="w-3.5 h-3.5 mt-1 text-muted-foreground" /> {phone}</p>
+              <p className="flex items-start gap-2"><MapPin className="w-3.5 h-3.5 mt-1 text-muted-foreground" /> {address}, {CITY_BN[city] || city}</p>
               <p className="flex items-start gap-2">
                 <Calendar className="w-3.5 h-3.5 mt-1 text-muted-foreground" />
-                {new Date(orderData.deliveryDate).toLocaleDateString('bn-BD', {
+                {new Date(deliveryDate).toLocaleDateString('bn-BD', {
                   weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
                 })}
               </p>
-              {orderData.notes && (
-                <p><span className="font-medium text-foreground">নোট:</span> {orderData.notes}</p>
-              )}
+              {notes && <p><span className="font-medium text-foreground">নোট:</span> {notes}</p>}
             </div>
           </div>
 
@@ -153,7 +145,7 @@ export default function OrderConfirmation({
             আরেকটি অর্ডার দিন
           </button>
           <a
-            href="https://wa.me/8801700000000?text=আমার%20অর্ডার%20সম্পর্কে%20সাহায্য%20দরকার"
+            href="https://wa.me/8801782521705?text=আমার%20অর্ডার%20সম্পর্কে%20সাহায্য%20দরকার"
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground font-medium py-4 rounded-full hover:scale-[1.01] hover:bg-secondary/90"

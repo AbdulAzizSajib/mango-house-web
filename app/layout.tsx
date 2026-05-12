@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Analytics } from '@vercel/analytics/next'
+import QueryProvider from '@/providers/QueryProvider'
 import './globals.css'
 
 const shadhinata = localFont({
@@ -33,7 +34,9 @@ export default function RootLayout({
   return (
     <html lang="bn" className={`${shadhinata.variable} bg-background`}>
       <body className="font-sans antialiased">
-        {children}
+        <QueryProvider>
+          {children}
+        </QueryProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
