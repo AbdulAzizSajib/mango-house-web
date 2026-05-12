@@ -1,0 +1,168 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Check, MessageCircle, RotateCw, MapPin, Calendar, Phone, ShoppingBag } from 'lucide-react'
+import type { CartItem } from '@/app/page'
+import type { OrderData } from '@/app/page'
+
+const VARIETY_BN: Record<string, string> = {
+  gopalbhog: 'গোপালভোগ',
+  himsagar: 'হিমসাগর',
+  ranipochondo: 'রানীপছন্দ',
+  langra: 'ল্যাংড়া',
+  amrapali: 'আম্রপালি',
+  fazli: 'ফজলি',
+}
+
+const CITY_BN: Record<string, string> = {
+  Dhaka: 'ঢাকা',
+  Chittagong: 'চট্টগ্রাম',
+  Sylhet: 'সিলেট',
+  Rajshahi: 'রাজশাহী',
+  Khulna: 'খুলনা',
+  Barisal: 'বরিশাল',
+  Mymensingh: 'ময়মনসিংহ',
+  Rangpur: 'রংপুর',
+}
+
+interface OrderConfirmationProps {
+  items: CartItem[]
+  orderData: OrderData
+  total: number
+  onPlaceAnotherOrder: () => void
+}
+
+export default function OrderConfirmation({
+  items,
+  orderData,
+  total,
+  onPlaceAnotherOrder,
+}: OrderConfirmationProps) {
+  const [showAnimation, setShowAnimation] = useState(false)
+
+  useEffect(() => {
+    setShowAnimation(true)
+  }, [])
+
+  return (
+    <section id="confirmation" className="relative py-20 sm:py-24 px-4 sm:px-6 border-t border-border/40 bg-muted/20">
+      <div className="max-w-2xl mx-auto">
+        {/* Check */}
+        <div className={`text-center mb-8 transition-all duration-700 ${showAnimation ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary text-secondary-foreground card-elevated">
+            <Check className="w-10 h-10" strokeWidth={3} />
+          </div>
+        </div>
+
+        {/* Headline */}
+        <div className="text-center mb-10">
+          <h1 className="font-display text-4xl sm:text-5xl font-bold text-foreground mb-3 leading-tight">
+            অর্ডার <span className="italic text-primary">নিশ্চিত</span>
+          </h1>
+          <p className="text-lg text-foreground/70 mb-1">
+            ম্যাঙ্গো হাউসকে বেছে নেওয়ার জন্য ধন্যবাদ
+          </p>
+          <p className="text-foreground/60 text-sm">
+            ডেলিভারির বিস্তারিত জানতে আমরা <span className="font-semibold text-foreground">{orderData.phone}</span> নম্বরে কল করব
+          </p>
+        </div>
+
+        {/* Card */}
+        <div className="bg-card rounded-2xl p-6 sm:p-8 card-elevated border border-border/40 mb-5">
+          {/* Items */}
+          <div className="mb-6 pb-6 border-b border-border/60">
+            <h2 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5 text-primary" /> অর্ডার সামারি
+            </h2>
+            <div className="space-y-3">
+              {items.map((item) => (
+                <div key={item.variety} className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-foreground">{VARIETY_BN[item.variety] || item.variety}</p>
+                    <p className="text-xs text-muted-foreground">{item.quantity} কেজি × ৳{item.price}</p>
+                  </div>
+                  <p className="font-bold text-foreground">
+                    ৳{(item.price * item.quantity).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Delivery */}
+          <div className="mb-6 pb-6 border-b border-border/60">
+            <h2 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-primary" /> ডেলিভারি ঠিকানা
+            </h2>
+            <div className="space-y-2 text-sm text-foreground/80">
+              <p><span className="font-semibold text-foreground">নাম:</span> {orderData.fullName}</p>
+              <p className="flex items-start gap-2"><Phone className="w-3.5 h-3.5 mt-1 text-muted-foreground" /> {orderData.phone}</p>
+              <p className="flex items-start gap-2"><MapPin className="w-3.5 h-3.5 mt-1 text-muted-foreground" /> {orderData.address}, {CITY_BN[orderData.city] || orderData.city}</p>
+              <p className="flex items-start gap-2">
+                <Calendar className="w-3.5 h-3.5 mt-1 text-muted-foreground" />
+                {new Date(orderData.deliveryDate).toLocaleDateString('bn-BD', {
+                  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                })}
+              </p>
+              {orderData.notes && (
+                <p><span className="font-semibold text-foreground">নোট:</span> {orderData.notes}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Total */}
+          <div className="bg-muted/50 rounded-xl p-5 mb-6 border border-border/60">
+            <div className="flex justify-between items-baseline">
+              <div>
+                <p className="font-bold text-foreground">পরিশোধের পরিমাণ</p>
+                <p className="text-xs text-muted-foreground mt-0.5">ক্যাশ অন ডেলিভারি</p>
+              </div>
+              <span className="font-display text-3xl font-bold text-foreground">
+                ৳{total.toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          {/* Next steps */}
+          <div className="bg-secondary/10 border border-secondary/30 rounded-xl p-5">
+            <p className="text-foreground font-bold mb-3 text-sm uppercase tracking-wider">পরবর্তী ধাপ</p>
+            <ul className="space-y-3 text-sm text-foreground/80">
+              {[
+                'আমরা আপনাকে কল করে ডেলিভারির বিস্তারিত নিশ্চিত করব',
+                'আপনার আম সাবধানে প্যাক করে পাঠানো হবে',
+                'ডেলিভারির আগে SMS-এ নিশ্চিতকরণ পাবেন',
+              ].map((step, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="shrink-0 w-6 h-6 rounded-full bg-secondary text-secondary-foreground text-xs font-bold flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={onPlaceAnotherOrder}
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold py-4 rounded-full card-elevated hover:scale-[1.01] hover:bg-primary/90"
+          >
+            <RotateCw className="w-4 h-4" />
+            আরেকটি অর্ডার দিন
+          </button>
+          <a
+            href="https://wa.me/8801700000000?text=আমার%20অর্ডার%20সম্পর্কে%20সাহায্য%20দরকার"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-secondary text-secondary-foreground font-bold py-4 rounded-full hover:scale-[1.01] hover:bg-secondary/90"
+          >
+            <MessageCircle className="w-4 h-4" />
+            হোয়াটসঅ্যাপে যোগাযোগ
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
