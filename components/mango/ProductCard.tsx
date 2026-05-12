@@ -79,7 +79,7 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
         <div className="flex items-baseline justify-between mb-5 pb-5 border-b border-border/70">
           <div>
             <p className="font-display text-3xl font-medium text-foreground">
-              ৳{variety.price}
+              <span className="text-xl">৳ </span>{variety.price.toLocaleString('bn-BD')}
               <span className="text-base text-muted-foreground font-sans font-normal"> /কেজি</span>
             </p>
           </div>
@@ -87,7 +87,7 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
             <div className="text-right">
               <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">মোট</p>
               <p className="text-lg font-bold text-secondary">
-                ৳{(variety.price * quantity).toLocaleString()}
+                ৳{(variety.price * quantity).toLocaleString('bn-BD')}
               </p>
             </div>
           )}
@@ -95,14 +95,14 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
 
         {/* Quantity selector */}
         <div className="space-y-2">
-          <label className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium flex items-center justify-between">
-            <span>পরিমাণ বেছে নিন</span>
+          <label className="text-[13px] uppercase tracking-wider text-muted-foreground font-medium flex items-center justify-between">
+            <span>অর্ডারের পরিমাণ নির্ধারণ করুন</span>
             {isSelected && (
               <button
                 onClick={() => onUpdateQuantity(0)}
                 className="inline-flex items-center gap-1 text-destructive hover:underline normal-case tracking-normal text-xs font-semibold"
               >
-                <Trash2 className="w-3 h-3" /> সরান
+                <Trash2 className="w-5 h-5" />
               </button>
             )}
           </label>
@@ -117,10 +117,10 @@ export default function ProductCard({ variety, quantity, onUpdateQuantity }: Pro
                   : 'border-border bg-card text-foreground hover:border-foreground/30'
               }`}
             >
-              {!isSelected && <option value={0}>কেজি বেছে নিন</option>}
+              {!isSelected && <option value={0}>প্যাকেজ নির্বাচন করুন</option>}
               {QUANTITY_OPTIONS.map((qty) => (
                 <option key={qty} value={qty}>
-                  {qty} কেজি — ৳{(variety.price * qty).toLocaleString()}
+                  {qty} কেজি — {(variety.price * qty).toLocaleString('bn-BD') } টাকা
                 </option>
               ))}
             </select>

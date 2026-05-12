@@ -38,9 +38,9 @@ export default function AboutSection() {
 
           {/* Text */}
           <div>
-            <div className="eyebrow mb-4">
+            <div className="eyebrow mb-4 ">
               <span className="w-8 h-px bg-primary" />
-              আমাদের গল্প
+              <p className='text-xl font-medium'>আমাদের গল্প</p>
             </div>
 
          <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-tight mb-6">

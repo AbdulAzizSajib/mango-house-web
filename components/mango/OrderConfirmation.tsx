@@ -60,7 +60,7 @@ export default function OrderConfirmation({
             অর্ডার <span className="italic text-primary">নিশ্চিত</span>
           </h1>
           <p className="text-lg text-foreground/70 mb-1">
-            ম্যাঙ্গো হাউসকে বেছে নেওয়ার জন্য ধন্যবাদ
+            রাজশাহী ম্যাঙ্গোকে বেছে নেওয়ার জন্য ধন্যবাদ
           </p>
           <p className="text-foreground/60 text-sm">
             ডেলিভারির বিস্তারিত জানতে আমরা <span className="font-semibold text-foreground">{orderData.phone}</span> নম্বরে কল করব
@@ -79,10 +79,10 @@ export default function OrderConfirmation({
                 <div key={item.variety} className="flex justify-between items-center">
                   <div>
                     <p className="font-semibold text-foreground">{VARIETY_BN[item.variety] || item.variety}</p>
-                    <p className="text-xs text-muted-foreground">{item.quantity} কেজি × ৳{item.price}</p>
+                    <p className="text-xs text-muted-foreground">{item.quantity} কেজি × ৳ {item.price}</p>
                   </div>
                   <p className="font-bold text-foreground">
-                    ৳{(item.price * item.quantity).toLocaleString()}
+                    ৳{(item.price * item.quantity).toLocaleString('bn-BD')}
                   </p>
                 </div>
               ))}

@@ -73,7 +73,7 @@ export default function OrderSummary({
             <div className="hidden sm:block text-right pr-6 border-r border-border">
               <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">সর্বমোট</p>
               <p className="font-display text-2xl font-bold text-foreground leading-none mt-1">
-                ৳{total.toLocaleString()}
+                ৳ {total.toLocaleString()}
               </p>
               {deliveryFee === 0 && !belowMin && (
                 <p className="text-[11px] text-secondary font-semibold mt-1">✓ ফ্রি ডেলিভারি</p>
@@ -84,7 +84,7 @@ export default function OrderSummary({
             <div className="sm:hidden flex items-center justify-between border-t border-border pt-3">
               <div>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">সর্বমোট</p>
-                <p className="font-display text-xl font-bold text-foreground">৳{total.toLocaleString()}</p>
+                <p className="font-display text-xl font-bold text-foreground">৳ {total.toLocaleString()}</p>
               </div>
               {deliveryFee === 0 && !belowMin && (
                 <p className="text-xs text-secondary font-semibold">✓ ফ্রি ডেলিভারি</p>

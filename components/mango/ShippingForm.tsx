@@ -173,18 +173,18 @@ export default function ShippingForm({ onSubmit, orderSummary }: ShippingFormPro
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-foreground/70">সাবটোটাল</span>
-                  <span className="text-foreground font-medium">৳{orderSummary.subtotal.toLocaleString()}</span>
+                  <span className="text-foreground font-medium">৳ {orderSummary.subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between pb-2 border-b border-border/60">
                   <span className="text-foreground/70">ডেলিভারি ফি</span>
                   <span className="text-foreground font-medium">
-                    {orderSummary.deliveryFee === 0 ? '✓ ফ্রি' : `৳${orderSummary.deliveryFee}`}
+                    {orderSummary.deliveryFee === 0 ? '✓ ফ্রি' : `৳ ${orderSummary.deliveryFee}`}
                   </span>
                 </div>
                 <div className="flex justify-between items-baseline pt-1">
                   <span className="font-bold text-foreground">সর্বমোট</span>
                   <span className="font-display text-2xl font-bold text-foreground">
-                    ৳{orderSummary.total.toLocaleString()}
+                    ৳ {orderSummary.total.toLocaleString()}
                   </span>
                 </div>
               </div>

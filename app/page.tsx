@@ -90,7 +90,7 @@ export default function Home() {
         <ProductSection cart={cart} updateCart={updateCart} />
       </div>
 
-      <AboutSection />
+      {/* <AboutSection /> */}
 
       <HowItWorks />
 

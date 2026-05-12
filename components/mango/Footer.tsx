@@ -33,7 +33,7 @@ export default function Footer() {
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
               <div className="leading-tight">
-                <p className="font-display text-xl font-medium">ম্যাঙ্গো হাউস</p>
+                <p className="font-display text-xl font-medium">রাজশাহী ম্যাঙ্গো</p>
                 <p className="text-[10px] text-background/60 tracking-wider uppercase">Since 2015</p>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-background/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-background/55">
-          <p>© ২০২৫ ম্যাঙ্গো হাউস। সব অধিকার সংরক্ষিত।</p>
+          <p>© ২০২৫ রাজশাহী ম্যাঙ্গো। সব অধিকার সংরক্ষিত।</p>
           <p>বাংলাদেশে ভালোবাসা দিয়ে তৈরি</p>
         </div>
       </div>

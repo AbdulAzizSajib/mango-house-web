@@ -14,16 +14,16 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
       <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+            {/* <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
               <Leaf className="w-5 h-5 text-primary-foreground" />
-            </div>
+            </div> */}
             <div className="leading-tight">
-              <p className="font-display text-lg sm:text-xl font-bold text-foreground">ম্যাঙ্গো হাউস</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">Since 2015</p>
+              <p className="font-display text-lg sm:text-2xl font-medium text-foreground">রাজশাহী ম্যাঙ্গো</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">Since 2025</p>
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-foreground/80">
+          <nav className="hidden md:flex items-center gap-7 text-xl font-medium text-foreground/80">
             <a href="#products" className="hover:text-primary">আম</a>
             <a href="#about" className="hover:text-primary">আমরা</a>
             <a href="#reviews" className="hover:text-primary">রিভিউ</a>
@@ -35,7 +35,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold hover:bg-foreground/90"
           >
             <Phone className="w-4 h-4" />
-            <span className="hidden sm:inline">০১৭০০-০০০০০০</span>
+            <span className="hidden sm:inline">01782521705</span>
           </a>
         </div>
       </header>
@@ -96,15 +96,15 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
 
           {/* Right: real photograph */}
           <div className="order-1 lg:order-2 relative">
-            <div className="relative aspect-[4/5] sm:aspect-[5/6] rounded-2xl overflow-hidden card-elevated">
-              {/* <Image
-                src="https://images.unsplash.com/photo-1605027990121-cbae9e0642df?auto=format&fit=crop&w=1200&q=85"
+            <div className="relative aspect-4/5 sm:aspect-5/6 rounded-2xl overflow-hidden card-elevated">
+              <Image
+                src="/mangoImage/ban/himsagor.JPG.jpeg"
                 alt="তাজা আম"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
-              /> */}
+              />
               {/* Soft vignette */}
               <div className="absolute inset-0 bg-linear-to-tr from-foreground/20 via-transparent to-transparent" />
             </div>
@@ -131,7 +131,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
             </div> */}
 
             {/* Rating badge */}
-            <div className="absolute -top-3 -right-3 sm:-right-6 bg-card rounded-xl p-3 card-elevated">
+            {/* <div className="absolute -top-3 -right-3 sm:-right-6 bg-card rounded-xl p-3 card-elevated">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((s) => (
@@ -145,7 +145,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
                   <p className="text-[10px] text-muted-foreground">১২০০+ রিভিউ</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

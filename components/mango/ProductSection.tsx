@@ -122,7 +122,7 @@ export default function ProductSection({ cart, updateCart }: ProductSectionProps
           <div className="max-w-xl">
             <div className="eyebrow mb-4 ">
               <span className="w-8 h-px bg-primary" />
-              <h2 className='font-medium'>
+              <h2 className='font-medium text-xl'>
               আমাদের সংগ্রহ
 
               </h2>
@@ -137,7 +137,7 @@ export default function ProductSection({ cart, updateCart }: ProductSectionProps
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              সর্বনিম্ন ১০ কেজি অর্ডার · ৳৮০/কেজি
+              সর্বনিম্ন ১০ কেজি অর্ডার · ৳ ৮০/কেজি
             </div>
           </div>
         </div>

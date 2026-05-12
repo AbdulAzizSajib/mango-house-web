@@ -34,7 +34,7 @@ export default function Guarantees() {
             <span className="w-8 h-px bg-primary" />
           </div>
           <h2 className="font-display text-4xl sm:text-5xl font-medium text-foreground leading-tight">
-            কেন <span className=" text-primary">ম্যাঙ্গো হাউস</span>?
+            কেন <span className=" text-primary">রাজশাহী ম্যাঙ্গো</span>?
           </h2>
         </div>
 

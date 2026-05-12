@@ -47,11 +47,11 @@ export default function FAQ() {
         <div className="text-center mb-12">
           <div className="eyebrow justify-center mb-4">
             <span className="w-8 h-px bg-primary" />
-         <p className='text-sm font-medium'>   সাধারণ প্রশ্ন</p>
+         <p className='text-sm font-medium'>সাধারণ প্রশ্ন</p>
             <span className="w-8 h-px bg-primary" />
           </div>
           <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-tight mb-3">
-            আপনার <span className="italic text-primary">প্রশ্নের</span> উত্তর
+            আপনার <span className=" text-primary">প্রশ্নের</span> উত্তর
           </h2>
           <p className="text-foreground/65">
             যা জানতে চান — সবকিছুর উত্তর এখানে
