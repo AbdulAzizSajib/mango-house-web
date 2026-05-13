@@ -8,7 +8,8 @@ export default function Footer() {
         <div className="bg-background/5 border border-background/10 rounded-2xl p-6 sm:p-8 mb-14 flex flex-col sm:flex-row items-center justify-between gap-5">
           <div>
             <h3 className="text-2xl sm:text-3xl font-medium mb-1">
-              এখনই অর্ডার করতে চান?
+            এই মৌসুমে <span className="text-primary">৮০০</span> পরিবারের কাছে যাবে।
+আপনি কি একজন?
             </h3>
             <p className="text-background/70 text-sm">
               হোয়াটসঅ্যাপে সরাসরি মেসেজ করুন — তাৎক্ষণিক রেসপন্স

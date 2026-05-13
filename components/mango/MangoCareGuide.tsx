@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, PackageOpen, Ban, Zap, Clock, Snowflake, Phone } from 'lucide-react'
+import { Plus, Phone } from 'lucide-react'
+
+const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
+const toBn = (n: number) => String(n).replace(/\d/g, (d) => BN_DIGITS[Number(d)])
 
 const GUIDE_SECTIONS = [
   {
-    Icon: PackageOpen,
     title: 'আম হাতে পাওয়ার পর কী করবেন',
     intro: 'কেমিক্যালমুক্ত আম সংবেদনশীল। সঠিক যত্নে রাখলেই পুরোপুরি স্বাদ পাবেন।',
     points: [
@@ -20,7 +22,6 @@ const GUIDE_SECTIONS = [
     ],
   },
   {
-    Icon: Ban,
     title: 'যা করবেন না',
     intro: 'এই ভুলগুলো এড়িয়ে চললে আম নষ্ট হওয়ার আশঙ্কা অনেক কমে যাবে।',
     points: [
@@ -33,7 +34,6 @@ const GUIDE_SECTIONS = [
     ],
   },
   {
-    Icon: Zap,
     title: 'দ্রুত পাকাতে চাইলে',
     intro: '১-২ দিনের মধ্যে পাকা আম খেতে চাইলে এই পদ্ধতি।',
     points: [
@@ -44,7 +44,6 @@ const GUIDE_SECTIONS = [
     ],
   },
   {
-    Icon: Clock,
     title: 'দেরিতে পাকাতে চাইলে',
     intro: 'অনুষ্ঠানের জন্য সংরক্ষণ করতে চাইলে এভাবে রাখুন।',
     points: [
@@ -53,7 +52,6 @@ const GUIDE_SECTIONS = [
     ],
   },
   {
-    Icon: Snowflake,
     title: 'বেশিদিন কাঁচা রাখতে চাইলে',
     intro: 'তরকারি বা লবণ-মরিচ মাখিয়ে খাওয়ার জন্য কাঁচা আম দীর্ঘদিন রাখুন।',
     points: [
@@ -86,7 +84,6 @@ export default function MangoCareGuide() {
         <div className="space-y-3">
           {GUIDE_SECTIONS.map((section, i) => {
             const isOpen = openIndex === i
-            const { Icon } = section
             return (
               <div
                 key={section.title}
@@ -98,10 +95,14 @@ export default function MangoCareGuide() {
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   className="w-full px-5 sm:px-6 py-5 flex items-center gap-4 text-left hover:bg-muted/30"
                 >
-                  <div className={`shrink-0 w-11 h-11 rounded-xl flex items-center justify-center ${
-                    isOpen ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
-                  }`}>
-                    <Icon className="w-5 h-5" strokeWidth={2} />
+                  <div
+                    className={`shrink-0 w-11 h-11 rounded-full border-2 flex items-center justify-center font-display text-lg font-medium transition-colors ${
+                      isOpen
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-primary/40 bg-transparent text-primary'
+                    }`}
+                  >
+                    {toBn(i + 1)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-display text-lg sm:text-xl font-medium text-foreground leading-tight">
@@ -147,26 +148,6 @@ export default function MangoCareGuide() {
               </div>
             )
           })}
-        </div>
-
-        {/* Helpline */}
-        <div className="mt-10 bg-secondary/10 border border-secondary/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="shrink-0 w-11 h-11 rounded-xl bg-secondary text-secondary-foreground flex items-center justify-center">
-              <Phone className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-medium text-foreground">কোনো সমস্যা হলে সরাসরি কল করুন</p>
-              <p className="text-xs text-foreground/65">সংকোচ ছাড়া যোগাযোগ করুন — আমরা সাহায্য করব</p>
-            </div>
-          </div>
-          <a
-            href="tel:+8801782521705"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-foreground text-background font-medium hover:bg-foreground/90 whitespace-nowrap"
-          >
-            <Phone className="w-4 h-4" />
-            ০১৭৮২-৫২১৭০৫
-          </a>
         </div>
       </div>
     </section>
