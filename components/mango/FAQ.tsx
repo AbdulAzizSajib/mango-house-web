@@ -1,53 +1,56 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Plus, Phone, MessageCircle } from 'lucide-react'
+import { useState } from "react";
+import { Plus, Phone, MessageCircle } from "lucide-react";
 
 const FAQS = [
   {
-    q: 'আম কি কার্বাইড বা ফরমালিন মুক্ত?',
-    a: 'হ্যাঁ, ১০০% নিশ্চিত। আমাদের সব আম প্রাকৃতিকভাবে গাছে পাকানো। কোনো রাসায়নিক, কার্বাইড বা ফরমালিন ব্যবহার করা হয় না। আপনি চাইলে পরীক্ষাও করতে পারেন।',
+    q: "আম কি কার্বাইড বা ফরমালিন মুক্ত?",
+    a: "হ্যাঁ, ১০০% নিশ্চিত। আমাদের সব আম প্রাকৃতিকভাবে গাছে পাকানো। কোনো রাসায়নিক, কার্বাইড বা ফরমালিন ব্যবহার করা হয় না। আপনি চাইলে পরীক্ষাও করতে পারেন।",
   },
   {
-    q: 'ডেলিভারিতে কত সময় লাগবে?',
-    a: 'ঢাকা শহরের মধ্যে সাধারণত ২৪ ঘণ্টা। ঢাকার বাইরে ২৪-৪৮ ঘণ্টার মধ্যে পৌঁছে যায়। দূরবর্তী জেলার ক্ষেত্রে ২-৩ দিন লাগতে পারে।',
+    q: "ডেলিভারিতে কত সময় লাগবে?",
+    a: "ঢাকা শহরের মধ্যে সাধারণত ২৪ ঘণ্টা। ঢাকার বাইরে ২৪-৪৮ ঘণ্টার মধ্যে পৌঁছে যায়। দূরবর্তী জেলার ক্ষেত্রে ২-৩ দিন লাগতে পারে।",
   },
   {
-    q: 'পেমেন্ট কীভাবে করব?',
-    a: 'ক্যাশ অন ডেলিভারি (COD) সুবিধা আছে — অর্থাৎ আম হাতে পেয়ে তবেই টাকা দেবেন। এছাড়া bKash, Nagad এবং ব্যাংক ট্রান্সফারেও পেমেন্ট করতে পারেন।',
+    q: "পেমেন্ট কীভাবে করব?",
+    a: "ক্যাশ অন ডেলিভারি (COD) সুবিধা আছে — অর্থাৎ আম হাতে পেয়ে তবেই টাকা দেবেন। এছাড়া bKash, Nagad এবং ব্যাংক ট্রান্সফারেও পেমেন্ট করতে পারেন।",
   },
   {
-    q: 'আম পচা বা খারাপ পেলে কী করব?',
-    a: 'ডেলিভারির সময়েই প্যাকেট খুলে দেখুন। কোনো আম নষ্ট থাকলে সাথে সাথে ডেলিভারি ব্যক্তিকে জানান অথবা ২৪ ঘণ্টার মধ্যে আমাদের কল করুন। ১০০% রিপ্লেসমেন্ট বা টাকা ফেরত পাবেন।',
+    q: "আম পচা বা খারাপ পেলে কী করব?",
+    a: "ডেলিভারির সময়েই প্যাকেট খুলে দেখুন। কোনো আম নষ্ট থাকলে সাথে সাথে ডেলিভারি ব্যক্তিকে জানান অথবা ২৪ ঘণ্টার মধ্যে আমাদের কল করুন। ১০০% রিপ্লেসমেন্ট বা টাকা ফেরত পাবেন।",
   },
   {
-    q: 'কাঁচা না পাকা আম পাবো?',
+    q: "কাঁচা না পাকা আম পাবো?",
     a: 'ডিফল্ট হিসেবে আমরা আধা-পাকা আম পাঠাই, যাতে ১-২ দিনে সম্পূর্ণ পেকে যায়। আপনি চাইলে অর্ডার নোটে "একদম পাকা" বা "কাঁচা" উল্লেখ করতে পারেন।',
   },
   {
-    q: 'সর্বনিম্ন কত কেজি অর্ডার করতে হবে?',
-    a: 'সর্বনিম্ন ১০ কেজি অর্ডার করতে হবে। একাধিক জাত মিলিয়ে ১০ কেজি হলেই হবে — যেমন ৫ কেজি হিমসাগর + ৫ কেজি ল্যাংড়া। ১৫০০ টাকার উপরে অর্ডারে ডেলিভারি ফ্রি।',
+    q: "সর্বনিম্ন কত কেজি অর্ডার করতে হবে?",
+    a: "সর্বনিম্ন ১০ কেজি অর্ডার করতে হবে। একাধিক জাত মিলিয়ে ১০ কেজি হলেই হবে — যেমন ৫ কেজি হিমসাগর + ৫ কেজি ল্যাংড়া। ১৫০০ টাকার উপরে অর্ডারে ডেলিভারি ফ্রি।",
   },
   {
-    q: 'কোন কোন এলাকায় ডেলিভারি দেন?',
-    a: 'বাংলাদেশের সব জেলায় ডেলিভারি দিই। ঢাকার ভেতরে নিজস্ব ডেলিভারি টিম, ঢাকার বাইরে কুরিয়ার সার্ভিসের মাধ্যমে।',
+    q: "কোন কোন এলাকায় ডেলিভারি দেন?",
+    a: "বাংলাদেশের সব জেলায় ডেলিভারি দিই। ঢাকার ভেতরে নিজস্ব ডেলিভারি টিম, ঢাকার বাইরে কুরিয়ার সার্ভিসের মাধ্যমে।",
   },
   {
-    q: 'অর্ডার ক্যানসেল করতে পারব?',
-    a: 'প্যাকিং শুরু হওয়ার আগ পর্যন্ত যেকোনো সময় ক্যানসেল করতে পারবেন। হোয়াটসঅ্যাপ বা কলে জানালেই হবে।',
+    q: "অর্ডার ক্যানসেল করতে পারব?",
+    a: "প্যাকিং শুরু হওয়ার আগ পর্যন্ত যেকোনো সময় ক্যানসেল করতে পারবেন। হোয়াটসঅ্যাপ বা কলে জানালেই হবে।",
   },
-]
+];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative py-20 sm:py-28 px-4 sm:px-6 border-t border-border/40">
+    <section
+      id="faq"
+      className="relative py-20 sm:py-28 px-4 sm:px-6 border-t border-border/40"
+    >
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <div className="eyebrow justify-center mb-4">
             <span className="w-8 h-px bg-primary" />
-         <p className='text-sm font-medium'>সাধারণ প্রশ্ন</p>
+            <p className="text-sm font-medium">সাধারণ প্রশ্ন</p>
             <span className="w-8 h-px bg-primary" />
           </div>
           <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-tight mb-3">
@@ -60,12 +63,14 @@ export default function FAQ() {
 
         <div className="space-y-3">
           {FAQS.map((faq, i) => {
-            const isOpen = openIndex === i
+            const isOpen = openIndex === i;
             return (
               <div
                 key={faq.q}
                 className={`bg-card rounded-xl overflow-hidden border ${
-                  isOpen ? 'border-primary/40 card-elevated' : 'border-border/60'
+                  isOpen
+                    ? "border-primary/40 card-elevated"
+                    : "border-border/60"
                 }`}
               >
                 <button
@@ -78,8 +83,8 @@ export default function FAQ() {
                   <span
                     className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                       isOpen
-                        ? 'bg-primary text-primary-foreground rotate-45'
-                        : 'bg-muted text-foreground'
+                        ? "bg-primary text-primary-foreground rotate-45"
+                        : "bg-muted text-foreground"
                     }`}
                   >
                     <Plus className="w-4 h-4" strokeWidth={2.5} />
@@ -88,7 +93,9 @@ export default function FAQ() {
 
                 <div
                   className={`grid transition-all duration-300 ${
-                    isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                    isOpen
+                      ? "grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0"
                   }`}
                 >
                   <div className="overflow-hidden">
@@ -98,13 +105,15 @@ export default function FAQ() {
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
 
         {/* Contact CTA */}
         <div className="mt-12 text-center bg-muted/40 rounded-2xl p-7 border border-border/40">
-          <p className="font-display text-2xl font-medium text-foreground mb-2">আরো প্রশ্ন আছে?</p>
+          <p className="font-display text-2xl font-medium text-foreground mb-2">
+            আরো প্রশ্ন আছে?
+          </p>
           <p className="text-sm text-foreground/65 mb-5">
             আমাদের সাথে সরাসরি যোগাযোগ করুন — সাহায্য করতে প্রস্তুত
           </p>
@@ -114,10 +123,10 @@ export default function FAQ() {
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-foreground text-background font-medium hover:bg-foreground/90"
             >
               <Phone className="w-4 h-4" />
-              017-82521705
+              01782521705
             </a>
             <a
-              href="https://wa.me/8801782521705"
+              href="https://wa.me/8801782521705?text=আমার%20অর্ডার%20সম্পর্কে%20সাহায্য%20দরকার"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-secondary text-secondary-foreground font-medium hover:bg-secondary/90"
@@ -129,5 +138,5 @@ export default function FAQ() {
         </div>
       </div>
     </section>
-  )
+  );
 }

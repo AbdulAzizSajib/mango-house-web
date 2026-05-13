@@ -98,7 +98,10 @@ export class UnauthorizedError extends Error {
 export async function authFetch<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
   const token = getToken()
   const headers = new Headers(init.headers)
-  headers.set('Content-Type', 'application/json')
+  // Only set JSON content-type when body is NOT FormData (multipart handles its own boundary)
+  if (!(init.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json')
+  }
   if (token) headers.set('Authorization', `Bearer ${token}`)
 
   const res = await fetch(`${BASE_URL}${path}`, { ...init, headers, cache: 'no-store' })
@@ -139,4 +142,152 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
     method: 'PATCH',
     body: JSON.stringify({ status }),
   })
+}
+
+// ─── Hero Banners ─────────────────────────────────────────────────────────────
+
+export interface HeroBanner {
+  id: string
+  title: string
+  subtitle: string
+  category: string
+  harvestDate: string
+  images: string[]
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface HeroBannersResponse {
+  success: boolean
+  message: string
+  data: HeroBanner[]
+}
+
+export interface HeroBannerResponse {
+  success: boolean
+  message: string
+  data: HeroBanner
+}
+
+export async function getBanners(): Promise<HeroBanner[]> {
+  const json = await authFetch<HeroBannersResponse>('/hero-banners')
+  return json.data
+}
+
+export async function getBanner(id: string): Promise<HeroBanner> {
+  const json = await authFetch<HeroBannerResponse>(`/hero-banners/${id}`)
+  return json.data
+}
+
+export interface CreateBannerPayload {
+  title: string
+  subtitle?: string
+  category?: string
+  harvestDate?: string
+  isActive: boolean
+  images: File[]
+}
+
+export async function createBanner(payload: CreateBannerPayload): Promise<HeroBanner> {
+  const fd = new FormData()
+  fd.append('title', payload.title)
+  if (payload.subtitle) fd.append('subtitle', payload.subtitle)
+  if (payload.category) fd.append('category', payload.category)
+  if (payload.harvestDate) fd.append('harvestDate', payload.harvestDate)
+  fd.append('isActive', String(payload.isActive))
+  payload.images.forEach((f) => fd.append('images', f))
+  const json = await authFetch<HeroBannerResponse>('/hero-banners', { method: 'POST', body: fd })
+  return json.data
+}
+
+export interface UpdateBannerPayload {
+  title?: string
+  subtitle?: string
+  category?: string
+  harvestDate?: string
+  isActive?: boolean
+  images?: File[]
+  removeImages?: string[]
+}
+
+export async function updateBanner(id: string, payload: UpdateBannerPayload): Promise<HeroBanner> {
+  const fd = new FormData()
+  if (payload.title !== undefined) fd.append('title', payload.title)
+  if (payload.subtitle !== undefined) fd.append('subtitle', payload.subtitle)
+  if (payload.category !== undefined) fd.append('category', payload.category)
+  if (payload.harvestDate !== undefined) fd.append('harvestDate', payload.harvestDate)
+  if (payload.isActive !== undefined) fd.append('isActive', String(payload.isActive))
+  payload.images?.forEach((f) => fd.append('images', f))
+  payload.removeImages?.forEach((url) => fd.append('removeImages', url))
+  const json = await authFetch<HeroBannerResponse>(`/hero-banners/${id}`, { method: 'PATCH', body: fd })
+  return json.data
+}
+
+export async function deleteBanner(id: string): Promise<void> {
+  await authFetch(`/hero-banners/${id}`, { method: 'DELETE' })
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+
+export interface Testimonial {
+  id: string
+  name: string
+  comment: string
+  location: string
+  isApproved: boolean
+  isFeatured: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TestimonialsResponse {
+  success: boolean
+  data: Testimonial[]
+}
+
+export interface TestimonialResponse {
+  success: boolean
+  data: Testimonial
+}
+
+export async function getAllTestimonials(): Promise<Testimonial[]> {
+  const json = await authFetch<TestimonialsResponse>('/testimonials/admin/all')
+  return json.data
+}
+
+export async function createTestimonial(payload: { name: string; comment: string; location: string }): Promise<Testimonial> {
+  const json = await authFetch<TestimonialResponse>('/testimonials', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  return json.data
+}
+
+export async function approveTestimonial(id: string, isApproved: boolean): Promise<Testimonial> {
+  const json = await authFetch<TestimonialResponse>(`/testimonials/${id}/approve`, {
+    method: 'PATCH',
+    body: JSON.stringify({ isApproved }),
+  })
+  return json.data
+}
+
+export async function featureTestimonial(id: string, isFeatured: boolean): Promise<Testimonial> {
+  const json = await authFetch<TestimonialResponse>(`/testimonials/${id}/feature`, {
+    method: 'PATCH',
+    body: JSON.stringify({ isFeatured }),
+  })
+  return json.data
+}
+
+export async function updateTestimonial(id: string, comment: string): Promise<Testimonial> {
+  const json = await authFetch<TestimonialResponse>(`/testimonials/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ comment }),
+  })
+  return json.data
+}
+
+export async function deleteTestimonial(id: string): Promise<void> {
+  await authFetch(`/testimonials/${id}`, { method: 'DELETE' })
 }

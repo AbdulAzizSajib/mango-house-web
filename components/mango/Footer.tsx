@@ -1,4 +1,11 @@
-import { Leaf, Phone, MapPin, Facebook, Instagram, MessageCircle } from 'lucide-react'
+import {
+  Leaf,
+  Phone,
+  MapPin,
+  Facebook,
+  Instagram,
+  MessageCircle,
+} from "lucide-react";
 
 export default function Footer() {
   return (
@@ -8,8 +15,8 @@ export default function Footer() {
         <div className="bg-background/5 border border-background/10 rounded-2xl p-6 sm:p-8 mb-14 flex flex-col sm:flex-row items-center justify-between gap-5">
           <div>
             <h3 className="text-2xl sm:text-3xl font-medium mb-1">
-            এই মৌসুমে <span className="text-primary">৮০০</span> পরিবারের কাছে যাবে।
-আপনি কি একজন?
+              এই মৌসুমে <span className="text-primary">৮০০</span> পরিবারের কাছে
+              যাবে। আপনি কি একজন?
             </h3>
             <p className="text-background/70 text-sm">
               হোয়াটসঅ্যাপে সরাসরি মেসেজ করুন — তাৎক্ষণিক রেসপন্স
@@ -34,50 +41,98 @@ export default function Footer() {
                 <Leaf className="w-5 h-5 text-primary-foreground" />
               </div>
               <div className="leading-tight">
-                <p className="font-display text-xl font-medium">রাজশাহী ম্যাঙ্গো</p>
-                <p className="text-[10px] text-background/60 tracking-wider uppercase">Since 2015</p>
+                <p className="font-display text-xl font-medium">
+                  রাজশাহী ম্যাঙ্গো
+                </p>
+                <p className="text-[10px] text-background/60 tracking-wider uppercase">
+                  Since 2015
+                </p>
               </div>
             </div>
             <p className="text-background/65 text-sm leading-relaxed">
-              বাংলাদেশের বিখ্যাত বাগান থেকে হাতে বাছাই করা তাজা আম — ভালোবাসার সাথে আপনার দরজায়।
+              বাংলাদেশের বিখ্যাত বাগান থেকে হাতে বাছাই করা তাজা আম — ভালোবাসার
+              সাথে আপনার দরজায়।
             </p>
           </div>
 
           {/* Links */}
           <div>
-            <h4 className="font-medium mb-4 text-sm uppercase tracking-wider text-background/90">দ্রুত লিঙ্ক</h4>
+            <h4 className="font-medium mb-4 text-sm uppercase tracking-wider text-background/90">
+              দ্রুত লিঙ্ক
+            </h4>
             <ul className="space-y-2.5 text-sm text-background/65">
-              <li><a href="#products" className="hover:text-background">আম দেখুন</a></li>
-              <li><a href="#about" className="hover:text-background">আমাদের সম্পর্কে</a></li>
-              <li><a href="#reviews" className="hover:text-background">কাস্টমার রিভিউ</a></li>
-              <li><a href="#faq" className="hover:text-background">FAQ</a></li>
+              <li>
+                <a href="#products" className="hover:text-background">
+                  আম দেখুন
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="hover:text-background">
+                  আমাদের সম্পর্কে
+                </a>
+              </li>
+              <li>
+                <a href="#reviews" className="hover:text-background">
+                  কাস্টমার রিভিউ
+                </a>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-background">
+                  FAQ
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-medium mb-4 text-sm uppercase tracking-wider text-background/90">যোগাযোগ</h4>
+            <h4 className="font-medium mb-4 text-sm uppercase tracking-wider text-background/90">
+              যোগাযোগ
+            </h4>
             <ul className="space-y-3 text-sm text-background/65">
               <li className="flex items-start gap-2.5">
                 <Phone className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                <a href="tel:+8801782521705" className="hover:text-background">০১৭৮২-৫২১৭০৫</a>
+                <a href="tel:+8801782521705" className="hover:text-background">
+                  01782521705
+                </a>
               </li>
 
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
-                <a href="https://www.rajshahimango.site/" target="_blank" rel="noopener noreferrer" className="hover:text-background break-all">www.rajshahimango.site</a>
+                <a
+                  href="https://www.rajshahimango.site/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-background break-all"
+                >
+                  www.rajshahimango.site
+                </a>
               </li>
             </ul>
           </div>
 
           {/* Social */}
           <div>
-            <h4 className="font-medium mb-4 text-sm uppercase tracking-wider text-background/90">সোশ্যাল</h4>
+            <h4 className="font-medium mb-4 text-sm uppercase tracking-wider text-background/90">
+              সোশ্যাল
+            </h4>
             <div className="flex gap-2.5">
               {[
-                { Icon: Facebook, href: 'https://facebook.com/themango.house', label: 'Facebook' },
-                { Icon: Instagram, href: 'https://instagram.com/themango.house', label: 'Instagram' },
-                { Icon: MessageCircle, href: 'https://wa.me/8801782521705', label: 'WhatsApp' },
+                {
+                  Icon: Facebook,
+                  href: "https://facebook.com/themango.house",
+                  label: "Facebook",
+                },
+                {
+                  Icon: Instagram,
+                  href: "https://instagram.com/themango.house",
+                  label: "Instagram",
+                },
+                {
+                  Icon: MessageCircle,
+                  href: "https://wa.me/8801782521705",
+                  label: "WhatsApp",
+                },
               ].map(({ Icon, href, label }) => (
                 <a
                   key={label}
@@ -102,5 +157,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

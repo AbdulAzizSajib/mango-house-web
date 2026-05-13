@@ -1,51 +1,87 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { LayoutDashboard, ShoppingBag, Images, MessageSquare, LogOut, Menu, X, Leaf } from 'lucide-react'
-import { getToken, clearToken } from '@/lib/api'
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Images,
+  MessageSquare,
+  LogOut,
+  Menu,
+  X,
+  Leaf,
+} from "lucide-react";
+import { getToken, clearToken } from "@/lib/api";
 
 const NAV = [
-  { href: '/admin', label: 'ড্যাশবোর্ড', en: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/orders', label: 'অর্ডার', en: 'Orders', icon: ShoppingBag },
-  { href: '/admin/photos', label: 'প্রতিদিনের ছবি', en: 'Daily Photos', icon: Images },
-  { href: '/admin/reviews', label: 'রিভিউ', en: 'Reviews', icon: MessageSquare },
-]
+  {
+    href: "/admin",
+    label: "ড্যাশবোর্ড",
+    en: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    href: "/admin/product",
+    label: "পণ্য",
+    en: "Products",
+    icon: Leaf,
+  },
+  { href: "/admin/orders", label: "অর্ডার", en: "Orders", icon: ShoppingBag },
+  {
+    href: "/admin/photos",
+    label: "প্রতিদিনের ছবি",
+    en: "Daily Photos",
+    icon: Images,
+  },
+  {
+    href: "/admin/reviews",
+    label: "রিভিউ",
+    en: "Reviews",
+    icon: MessageSquare,
+  },
+];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [ready, setReady] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [ready, setReady] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isLoginPage = pathname === '/admin/login'
+  const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
     if (isLoginPage) {
-      setReady(true)
-      return
+      setReady(true);
+      return;
     }
     if (!getToken()) {
-      router.replace('/admin/login')
-      return
+      router.replace("/admin/login");
+      return;
     }
-    setReady(true)
-  }, [isLoginPage, router])
+    setReady(true);
+  }, [isLoginPage, router]);
 
   const handleLogout = () => {
-    clearToken()
-    router.replace('/admin/login')
-  }
+    clearToken();
+    router.replace("/admin/login");
+  };
 
-  if (isLoginPage) return <>{children}</>
+  if (isLoginPage) return <>{children}</>;
 
   if (!ready) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30">
-        <p className="font-mono text-xs tracking-[0.2em] uppercase text-foreground/50">Loading…</p>
+        <p className="font-mono text-xs tracking-[0.2em] uppercase text-foreground/50">
+          Loading…
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -53,7 +89,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside
         className={`fixed lg:sticky top-0 left-0 h-screen w-64 bg-card border-r border-border/60 z-40 transform transition-transform lg:transform-none ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         <div className="flex items-center gap-3 px-5 py-5 border-b border-border/60">
@@ -61,14 +97,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Leaf className="w-5 h-5 text-primary-foreground" />
           </div>
           <div className="leading-tight">
-            <p className="font-display text-base font-medium text-foreground">রাজশাহী ম্যাঙ্গো</p>
-            <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50 mt-0.5">Admin</p>
+            <p className="font-display text-base font-medium text-foreground">
+              রাজশাহী ম্যাঙ্গো
+            </p>
+            <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50 mt-0.5">
+              Admin
+            </p>
           </div>
         </div>
 
         <nav className="px-3 py-4 space-y-1">
           {NAV.map(({ href, label, en, icon: Icon }) => {
-            const active = pathname === href || (href !== '/admin' && pathname.startsWith(href))
+            const active =
+              pathname === href ||
+              (href !== "/admin" && pathname.startsWith(href));
             return (
               <Link
                 key={href}
@@ -76,17 +118,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                   active
-                    ? 'bg-primary text-primary-foreground font-medium'
-                    : 'text-foreground/75 hover:bg-muted hover:text-foreground'
+                    ? "bg-primary text-primary-foreground font-medium"
+                    : "text-foreground/75 hover:bg-muted hover:text-foreground"
                 }`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 <div className="leading-tight">
                   <p>{label}</p>
-                  <p className={`font-mono text-[9px] tracking-[0.16em] uppercase mt-0.5 ${active ? 'text-primary-foreground/70' : 'text-foreground/40'}`}>{en}</p>
+                  <p
+                    className={`font-mono text-[9px] tracking-[0.16em] uppercase mt-0.5 ${active ? "text-primary-foreground/70" : "text-foreground/40"}`}
+                  >
+                    {en}
+                  </p>
                 </div>
               </Link>
-            )
+            );
           })}
         </nav>
 
@@ -145,5 +191,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </button>
       )}
     </div>
-  )
+  );
 }

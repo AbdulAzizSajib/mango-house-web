@@ -1,8 +1,9 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
+import { Loader2, AlertCircle } from 'lucide-react'
 import ProductCard from './ProductCard'
 import type { CartItem } from '@/app/page'
-
 
 interface ProductSectionProps {
   cart: Map<string, CartItem>
@@ -11,155 +12,97 @@ interface ProductSectionProps {
   pricePerKg: number
 }
 
-const MANGO_VARIETIES = [
-  {
-    id: 'gopalbhog',
-    name: 'গোপালভোগ আম',
-    nameEn: 'Gopalbhog',
-    tagline: 'মৌসুমের প্রথম রাজা',
-    price: 80,
-    origin: 'রাজশাহী',
-    description: [
-      'মৌসুমের শুরুতেই পাওয়া যায়',
-      'অত্যন্ত মিষ্টি ও সুগন্ধি',
-      'আঁশ কম, শাঁস নরম',
-      'মাঝারি সাইজের ও রসালো',
-    
-    ],
-    image: '/mangoImage/Gopalvog_1.png',
-    badge: 'প্রিমিয়াম',
-  },
-  {
-    id: 'himsagar',
-    name: 'হিমসাগর আম',
-    nameEn: 'Himsagar',
-    tagline: 'বাংলার গর্ব',
-    price: 80,
-    origin: 'রাজশাহী',
-    description: [
-      'বাংলাদেশের অন্যতম জনপ্রিয় প্রিমিয়াম আম',
-      'প্রায় আঁশবিহীন',
-      'গাঢ় হলুদ শাঁস ও দারুণ মিষ্টি স্বাদ',
-      'পাতলা আঁটি, বেশি শাঁস',
-      
-    ],
-    image: '/mangoImage/Himsagor_1.png',
-    badge: 'জনপ্রিয়',
-  },
-  {
-    id: 'ranipochondo',
-    name: 'রানীপছন্দ আম',
-    nameEn: 'Rani Pochondo',
-    tagline: 'রাজকীয় মিষ্টতা',
-    price: 80,
-    origin: 'রাজশাহী',
-    description: [
-      'নামের মতোই রাজকীয় স্বাদ',
-      'আকারে বড় ও দেখতে আকর্ষণীয়',
-      'মিষ্টি ও হালকা টক স্বাদের ব্যালেন্স',
-      'শাঁস নরম ও রসালো',
-    
-    ],
-    image: '/mangoImage/rani_pochondo.webp',
-    badge: 'বিশেষ',
-  },
-  {
-    id: 'langra',
-    name: 'ল্যাংড়া আম',
-    nameEn: 'Langra',
-    tagline: 'ঐতিহ্যবাহী স্বাদ',
-    price: 80,
-    origin: 'রাজশাহী',
-    description: [
-      'বিশেষ ঘ্রাণ ও ইউনিক স্বাদের জন্য বিখ্যাত',
-      'হালকা সবুজ রঙ থাকলেও ভেতরে পাকা ও মিষ্টি',
-      'আঁশ কম ও শাঁস ঘন',
-      'টক-মিষ্টির দারুণ কম্বিনেশন',
-    
-    ],
-    image: '/mangoImage/Gopalvog_2.png',
-  },
-  {
-    id: 'amrapali',
-    name: 'আম্রপালি আম',
-    nameEn: 'Amrapali',
-    tagline: 'ছোট কিন্তু অসাধারণ',
-    price: 80,
-    origin: 'রাজশাহী',
-    description: [
-      'হাইব্রিড জাতের জনপ্রিয় আম',
-      'ছোট থেকে মাঝারি সাইজের',
-      'অত্যন্ত মিষ্টি ও গাঢ় কমলা শাঁস',
-      'আঁটি ছোট, তাই শাঁস বেশি',
-    ],
-    image: '/mangoImage/amrupali.png',
-    badge: 'অর্গানিক',
-  },
-  {
-    id: 'fazli',
-    name: 'ফজলি আম',
-    nameEn: 'Fazli',
-    tagline: 'বড় ও রসালো',
-    price: 80,
-    origin: 'রাজশাহী',
-    description: [
-      'আকারে বড় ও ওজন বেশি',
-      'দেরিতে বাজারে আসে',
-      'মিষ্টি ও রসালো',
-      'জুস, আমসত্ত্ব ও প্রসেসিংয়ের জন্য আদর্শ',
-    ],
-    image: '/mangoImage/Himsagor_2.png',
-    badge: 'ফ্যামিলি প্যাক',
-  },
-]
+export interface ApiProduct {
+  id: string
+  name: string
+  description: string
+  category: string
+  location: string
+  regularprice: number
+  offerPrice: number | null
+  images: string[]
+  createdAt: string
+  updatedAt: string
+}
+
+async function fetchProducts(): Promise<ApiProduct[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
+  if (!res.ok) throw new Error('প্রোডাক্ট লোড করতে সমস্যা হয়েছে')
+  const json = await res.json()
+  return Array.isArray(json) ? json : json.data
+}
 
 export default function ProductSection({ cart, updateCart, pricePerKg }: ProductSectionProps) {
+  const { data: products, isLoading, isError } = useQuery({
+    queryKey: ['products-public'],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5,
+  })
+
   return (
     <section id="products" className="relative py-20 sm:py-28 px-4 sm:px-6 border-t border-border/40 bg-muted/30">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="max-w-xl">
-            <div className="eyebrow mb-4 ">
+            <div className="eyebrow mb-4">
               <span className="w-8 h-px bg-primary" />
-              <h2 className='font-medium text-xl'>
-              আমাদের সংগ্রহ
-
-              </h2>
+              <h2 className="font-medium text-xl">আমাদের সংগ্রহ</h2>
             </div>
             <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-              মৌসুমের <span className=" text-primary">সেরা</span> আম
+              মৌসুমের <span className="text-primary">সেরা</span> আম
             </h2>
           </div>
           <div className="max-w-md">
             <p className="text-foreground/65 text-base sm:text-lg mb-3">
               রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই — প্রতিটি আমে আছে খাঁটি স্বাদ, ঘ্রাণ ও রাজশাহীর ঐতিহ্যের ছোঁয়া।
             </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              <p className='font-display text-xl font-medium'>
-                সর্বনিম্ন অর্ডার ১০ কেজি
-              </p>
+              <p className="font-display text-xl font-medium">সর্বনিম্ন অর্ডার ১০ কেজি</p>
             </div>
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {MANGO_VARIETIES.map((mango) => {
-            const cartItem = cart.get(mango.id)
-            const quantity = cartItem?.quantity || 0
+        {/* States */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-20 gap-3 text-foreground/50">
+            <Loader2 className="w-6 h-6 animate-spin" />
+            <span className="text-base">লোড হচ্ছে...</span>
+          </div>
+        )}
 
-            return (
-              <ProductCard
-                key={mango.id}
-                variety={{ ...mango, price: pricePerKg }}
-                quantity={quantity}
-                onUpdateQuantity={(qty) => updateCart(mango.id, qty)}
-              />
-            )
-          })}
-        </div>
+        {isError && (
+          <div className="flex items-center justify-center py-16 gap-2 text-destructive">
+            <AlertCircle className="w-5 h-5" />
+            <span className="text-sm">প্রোডাক্ট লোড করতে সমস্যা হয়েছে। পেজ রিফ্রেশ করুন।</span>
+          </div>
+        )}
+
+        {/* Grid */}
+        {products && products.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {products.map((product) => {
+              const cartItem = cart.get(product.id)
+              const quantity = cartItem?.quantity || 0
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  pricePerKg={pricePerKg}
+                  quantity={quantity}
+                  onUpdateQuantity={(qty) => updateCart(product.id, qty)}
+                />
+              )
+            })}
+          </div>
+        )}
+
+        {products && products.length === 0 && (
+          <div className="text-center py-16 text-foreground/50">
+            এই মুহূর্তে কোনো প্রোডাক্ট নেই
+          </div>
+        )}
       </div>
     </section>
   )
