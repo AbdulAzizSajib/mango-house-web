@@ -83,10 +83,11 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-sans, system-ui);
-  --font-display: var(--font-sans, system-ui);
-  --font-serif: var(--font-sans, system-ui);
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: var(--font-body, var(--font-sans, system-ui));
+  --font-body: var(--font-body, var(--font-sans, system-ui));
+  --font-display: var(--font-display, var(--font-sans, Georgia, serif));
+  --font-serif: var(--font-display, var(--font-sans, Georgia, serif));
+  --font-mono: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -131,12 +132,45 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-feature-settings: 'kern', 'liga', 'calt';
+  }
+
+  /*
+   * Bangla numeral fix: Hind Siliguri renders ১/০/৭ as near-invisible thin
+   * strokes at small sizes on warm backgrounds. Adding `font-display` to any
+   * element with Bangla digits swaps the whole text to Noto Serif Bengali,
+   * which has full-weight readable digit glyphs and still handles all Bangla
+   * letters correctly. `next/font` doesn't expose Google Fonts' real family
+   * names, so we can't scope this to digit codepoints via @font-face — apply
+   * `font-display` at the element level instead.
+   */
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Georgia, serif;
+    font-feature-settings: 'kern', 'liga', 'dlig';
   }
 
   .font-display {
-    font-family: var(--font-sans), system-ui, sans-serif;
-    letter-spacing: -0.01em;
+    font-family: var(--font-display), Georgia, serif;
+    letter-spacing: -0.015em;
     font-weight: 700;
+  }
+
+  .font-body {
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  .font-mono,
+  .font-data {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-feature-settings: 'tnum', 'zero', 'ss01';
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+
+  /* Records / coordinates / serials — instantly signals "real records" */
+  .font-data {
+    letter-spacing: 0.02em;
   }
 }
 

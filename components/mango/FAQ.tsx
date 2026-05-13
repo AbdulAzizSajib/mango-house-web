@@ -114,7 +114,7 @@ export default function FAQ() {
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-foreground text-background font-medium hover:bg-foreground/90"
             >
               <Phone className="w-4 h-4" />
-              ০১৭৮২-৫২১৭০৫
+              017-82521705
             </a>
             <a
               href="https://wa.me/8801782521705"

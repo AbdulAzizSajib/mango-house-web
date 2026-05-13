@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { Noto_Serif_Bengali, Hind_Siliguri, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import QueryProvider from '@/providers/QueryProvider'
 import './globals.css'
@@ -9,6 +10,27 @@ const shadhinata = localFont({
     { path: '../public/font/Shadhinata_Unicode.ttf', weight: '400', style: 'normal' },
   ],
   variable: '--font-sans',
+  display: 'swap',
+})
+
+const notoSerifBengali = Noto_Serif_Bengali({
+  subsets: ['bengali', 'latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ['bengali', 'latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-body',
+  display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-mono',
   display: 'swap',
 })
 
@@ -32,8 +54,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="bn" className={`${shadhinata.variable} bg-background`}>
-      <body className="font-sans antialiased">
+    <html
+      lang="bn"
+      className={`${shadhinata.variable} ${notoSerifBengali.variable} ${hindSiliguri.variable} ${jetbrainsMono.variable} bg-background`}
+    >
+      <body className="font-body antialiased">
         <QueryProvider>
           {children}
         </QueryProvider>

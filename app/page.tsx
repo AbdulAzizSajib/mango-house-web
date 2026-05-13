@@ -3,8 +3,7 @@
 import { useRef } from 'react'
 import HeroSection from '@/components/mango/HeroSection'
 import ProductSection from '@/components/mango/ProductSection'
-import HowItWorks from '@/components/mango/HowItWorks'
-import Guarantees from '@/components/mango/Guarantees'
+
 import Testimonials from '@/components/mango/Testimonials'
 import MangoCareGuide from '@/components/mango/MangoCareGuide'
 import FAQ from '@/components/mango/FAQ'
@@ -63,8 +62,7 @@ export default function Home() {
         <ProductSection cart={cart} updateCart={updateCart} deliveryType={deliveryType} pricePerKg={pricePerKg()} />
       </div>
 
-      <HowItWorks />
-      <Guarantees />
+    
       <Testimonials />
       <MangoCareGuide />
 
