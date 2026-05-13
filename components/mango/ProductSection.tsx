@@ -7,7 +7,7 @@ import type { CartItem } from '@/app/page'
 
 interface ProductSectionProps {
   cart: Map<string, CartItem>
-  updateCart: (variety: string, quantity: number) => void
+  updateCart: (variety: string, quantity: number, name?: string) => void
   deliveryType: 'courier' | 'home'
   pricePerKg: number
 }
@@ -91,7 +91,7 @@ export default function ProductSection({ cart, updateCart, pricePerKg }: Product
                   product={product}
                   pricePerKg={pricePerKg}
                   quantity={quantity}
-                  onUpdateQuantity={(qty) => updateCart(product.id, qty)}
+                  onUpdateQuantity={(qty) => updateCart(product.id, qty, product.name)}
                 />
               )
             })}

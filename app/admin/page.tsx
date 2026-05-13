@@ -2,23 +2,42 @@
 
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
-import { ShoppingBag, Images, MessageSquare, ArrowRight } from 'lucide-react'
-import { getOrders, type AdminOrder } from '@/lib/api'
+import { ShoppingBag, Images, MessageSquare, ArrowRight, Loader2 } from 'lucide-react'
+import { authFetch } from '@/lib/api'
 
 const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
 const toBn = (n: number | string) => String(n).replace(/\d/g, (d) => BN_DIGITS[Number(d)])
 
+interface DashboardStats {
+  orders: {
+    total: number
+    pending: number
+    confirmed: number
+    processing: number
+    packed: number
+    shipped: number
+    outForDelivery: number
+    delivered: number
+    cancelled: number
+    returned: number
+    refunded: number
+  }
+  totalRevenue: number
+  totalProducts: number
+  pendingTestimonials: number
+}
+
 export default function AdminDashboardPage() {
-  const { data, isLoading, isError } = useQuery<AdminOrder[]>({
-    queryKey: ['admin', 'orders'],
-    queryFn: getOrders,
+  const { data, isLoading, isError } = useQuery<DashboardStats>({
+    queryKey: ['dashboard', 'stats'],
+    queryFn: async () => {
+      const json = await authFetch<{ success: boolean; data: DashboardStats }>('/dashboard/stats')
+      return json.data
+    },
     retry: false,
   })
 
-  const orders = data ?? []
-  const totalOrders = orders.length
-  const pending = orders.filter((o) => (o.status ?? 'pending') === 'pending').length
-  const revenue = orders.reduce((sum, o) => sum + (o.total ?? 0), 0)
+  const v = (n?: number) => isLoading ? '—' : isError ? '!' : toBn(n ?? 0)
 
   return (
     <div className="max-w-6xl">
@@ -28,55 +47,91 @@ export default function AdminDashboardPage() {
         <p className="text-sm text-foreground/60 mt-1.5">আজকের সারসংক্ষেপ এক নজরে</p>
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10">
-        <StatCard
-          label="মোট অর্ডার"
-          en="Total Orders"
-          value={isLoading ? '—' : toBn(totalOrders)}
-          loading={isLoading}
-          error={isError}
-        />
-        <StatCard
-          label="পেন্ডিং"
-          en="Pending"
-          value={isLoading ? '—' : toBn(pending)}
-          loading={isLoading}
-          error={isError}
-        />
-        <StatCard
-          label="মোট আয়"
-          en="Revenue"
-          value={isLoading ? '—' : `৳ ${toBn(revenue.toLocaleString())}`}
-          loading={isLoading}
-          error={isError}
-        />
+      {/* Primary stat cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+        <StatCard label="মোট অর্ডার" en="Total Orders" value={v(data?.orders.total)} loading={isLoading} error={isError} highlight />
+        <StatCard label="পেন্ডিং" en="Pending" value={v(data?.orders.pending)} loading={isLoading} error={isError} />
+        <StatCard label="মোট আয়" en="Revenue" value={isLoading ? '—' : isError ? '!' : `৳ ${toBn((data?.totalRevenue ?? 0).toLocaleString())}`} loading={isLoading} error={isError} />
+        <StatCard label="পণ্য" en="Products" value={v(data?.totalProducts)} loading={isLoading} error={isError} />
+      </div>
+
+      {/* Order pipeline */}
+      <div className="bg-card border border-border/60 rounded-xl p-5 mb-8">
+        <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50 mb-4">Order Pipeline</p>
+        {isLoading ? (
+          <div className="flex items-center gap-2 text-foreground/40 text-sm">
+            <Loader2 className="w-4 h-4 animate-spin" /> লোড হচ্ছে...
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            {[
+              { label: 'কনফার্মড',    en: 'Confirmed',        n: data?.orders.confirmed },
+              { label: 'প্রসেসিং',    en: 'Processing',       n: data?.orders.processing },
+              { label: 'প্যাকড',      en: 'Packed',           n: data?.orders.packed },
+              { label: 'শিপড',        en: 'Shipped',          n: data?.orders.shipped },
+              { label: 'ডেলিভারিতে', en: 'Out for Delivery',  n: data?.orders.outForDelivery },
+            ].map((s) => (
+              <div key={s.en} className="text-center py-3 px-2 rounded-lg bg-muted/40">
+                <p className="font-display text-2xl font-medium text-foreground">{toBn(s.n ?? 0)}</p>
+                <p className="text-xs text-foreground/70 mt-0.5">{s.label}</p>
+                <p className="font-mono text-[9px] text-foreground/40 tracking-wider uppercase">{s.en}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Delivered / Cancelled / Returned / Refunded */}
+        {!isLoading && (
+          <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-border/40">
+            {[
+              { label: 'ডেলিভারড',  en: 'Delivered', n: data?.orders.delivered,  color: 'text-green-600' },
+              { label: 'ক্যানসেল',  en: 'Cancelled', n: data?.orders.cancelled,  color: 'text-red-500' },
+              { label: 'রিটার্নড',  en: 'Returned',  n: data?.orders.returned,   color: 'text-orange-500' },
+              { label: 'রিফান্ডেড', en: 'Refunded',  n: data?.orders.refunded,   color: 'text-rose-500' },
+            ].map((s) => (
+              <div key={s.en} className="flex items-center gap-2">
+                <span className={`font-display text-base font-medium ${s.color}`}>{toBn(s.n ?? 0)}</span>
+                <span className="text-xs text-foreground/60">{s.label}</span>
+                <span className="font-mono text-[9px] text-foreground/30 uppercase">{s.en}</span>
+              </div>
+            ))}
+
+            {data && data.pendingTestimonials > 0 && (
+              <div className="ml-auto flex items-center gap-2">
+                <span className="font-display text-base font-medium text-amber-600">{toBn(data.pendingTestimonials)}</span>
+                <span className="text-xs text-foreground/60">পেন্ডিং রিভিউ</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Shortcuts */}
       <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-foreground/55 mb-3">Quick Access</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Shortcut href="/admin/orders" icon={ShoppingBag} label="অর্ডার ম্যানেজ" en="Manage Orders" />
-        <Shortcut href="/admin/photos" icon={Images} label="ছবি আপলোড" en="Upload Photos" />
-        <Shortcut href="/admin/reviews" icon={MessageSquare} label="রিভিউ" en="Reviews" />
+        <Shortcut href="/admin/orders"  icon={ShoppingBag}  label="অর্ডার ম্যানেজ" en="Manage Orders" />
+        <Shortcut href="/admin/photos"  icon={Images}       label="ছবি আপলোড"     en="Upload Photos" />
+        <Shortcut href="/admin/reviews" icon={MessageSquare} label="রিভিউ"         en="Reviews" />
       </div>
 
       {isError && (
         <p className="mt-8 text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-4 py-3">
-          অর্ডার লোড করতে সমস্যা হয়েছে। ব্যাকএন্ড <code className="font-mono text-xs">/admin/orders</code> এন্ডপয়েন্ট আছে কিনা চেক করুন।
+          ড্যাশবোর্ড লোড করতে সমস্যা হয়েছে।
         </p>
       )}
     </div>
   )
 }
 
-function StatCard({ label, en, value, loading, error }: { label: string; en: string; value: string; loading?: boolean; error?: boolean }) {
+function StatCard({ label, en, value, loading, error, highlight }: {
+  label: string; en: string; value: string; loading?: boolean; error?: boolean; highlight?: boolean
+}) {
   return (
-    <div className="bg-card border border-border/60 rounded-xl p-5">
+    <div className={`border rounded-xl p-5 ${highlight ? 'bg-primary/5 border-primary/20' : 'bg-card border-border/60'}`}>
       <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50">{en}</p>
       <p className="text-sm text-foreground/70 mt-1">{label}</p>
-      <p className={`font-display text-3xl font-medium mt-3 ${error ? 'text-destructive' : 'text-foreground'} ${loading ? 'opacity-40' : ''}`}>
-        {error ? '!' : value}
+      <p className={`font-display text-3xl font-medium mt-3 ${error ? 'text-destructive' : highlight ? 'text-primary' : 'text-foreground'} ${loading ? 'opacity-40' : ''}`}>
+        {value}
       </p>
     </div>
   )

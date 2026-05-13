@@ -4,14 +4,6 @@ import { useEffect, useState } from 'react'
 import { Check, MessageCircle, RotateCw, MapPin, Calendar, Phone, ShoppingBag } from 'lucide-react'
 import type { OrderResponse } from '@/lib/api'
 
-const VARIETY_BN: Record<string, string> = {
-  gopalbhog: 'গোপালভোগ',
-  himsagar: 'হিমসাগর',
-  ranipochondo: 'রানীপছন্দ',
-  langra: 'ল্যাংড়া',
-  amrapali: 'আম্রপালি',
-  fazli: 'ফজলি',
-}
 
 const CITY_BN: Record<string, string> = {
   Dhaka: 'ঢাকা',
@@ -72,7 +64,7 @@ export default function OrderConfirmation({ order, onPlaceAnotherOrder }: OrderC
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium text-foreground">{VARIETY_BN[item.variety.toLowerCase()] || item.variety}</p>
+                    <p className="font-medium text-foreground">{item.variety}</p>
                     <p className="text-xs text-muted-foreground">{item.quantity} কেজি × ৳ {item.price}</p>
                   </div>
                   <p className="font-medium text-foreground">

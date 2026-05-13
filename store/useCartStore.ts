@@ -6,6 +6,7 @@ const HOME_PRICE = 95
 
 export interface CartItem {
   variety: string
+  name: string
   quantity: number
   price: number
 }
@@ -21,7 +22,7 @@ interface CartStore {
   total: () => number
 
   // actions
-  updateCart: (variety: string, quantity: number) => void
+  updateCart: (variety: string, quantity: number, name?: string) => void
   setDeliveryType: (type: 'courier' | 'home') => void
   setSubmittedOrder: (order: OrderResponse['data']) => void
   resetOrder: () => void
@@ -42,14 +43,15 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   total: () => get().subtotal(),
 
-  updateCart: (variety, quantity) => {
+  updateCart: (variety, quantity, name) => {
     const price = get().pricePerKg()
     set((state) => {
       const newCart = new Map(state.cart)
       if (quantity === 0) {
         newCart.delete(variety)
       } else {
-        newCart.set(variety, { variety, quantity, price })
+        const existing = state.cart.get(variety)
+        newCart.set(variety, { variety, name: name ?? existing?.name ?? variety, quantity, price })
       }
       return { cart: newCart }
     })

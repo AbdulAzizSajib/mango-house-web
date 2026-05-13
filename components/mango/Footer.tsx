@@ -23,7 +23,7 @@ export default function Footer() {
             </p>
           </div>
           <a
-            href="https://wa.me/8801700000000?text=হ্যালো%20ম্যাঙ্গো%20হাউস"
+            href="https://wa.me/8801782521705?text=হ্যালো%20ম্যাঙ্গো%20হাউস"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-medium px-7 py-3.5 rounded-full hover:bg-primary/90 whitespace-nowrap"

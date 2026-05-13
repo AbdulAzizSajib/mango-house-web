@@ -123,7 +123,17 @@ export async function authFetch<T = unknown>(path: string, init: RequestInit = {
 
 // ─── Admin orders ─────────────────────────────────────────────────────────
 
-export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'packed'
+  | 'shipped'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'cancelled'
+  | 'returned'
+  | 'refunded'
 
 export type AdminOrder = OrderResponse['data'] & { status?: OrderStatus }
 
@@ -133,12 +143,12 @@ export interface OrdersListResponse {
 }
 
 export async function getOrders(): Promise<AdminOrder[]> {
-  const json = await authFetch<OrdersListResponse | AdminOrder[]>('/admin/orders')
+  const json = await authFetch<OrdersListResponse | AdminOrder[]>('/orders')
   return Array.isArray(json) ? json : json?.data ?? []
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus): Promise<void> {
-  await authFetch(`/admin/orders/${id}/status`, {
+  await authFetch(`/orders/${id}/status`, {
     method: 'PATCH',
     body: JSON.stringify({ status }),
   })

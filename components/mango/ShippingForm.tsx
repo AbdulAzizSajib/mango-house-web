@@ -78,7 +78,7 @@ export default function ShippingForm({ deliveryType, onDeliveryTypeChange, order
 
   const onFormSubmit = (data: OrderData) => {
     const items = Array.from(cart.values()).map((i) => ({
-      variety: i.variety,
+      variety: i.name || i.variety,
       quantity: i.quantity,
       price: i.price,
     }))

@@ -9,11 +9,16 @@ const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮'
 const toBn = (n: number | string) => String(n).replace(/\d/g, (d) => BN_DIGITS[Number(d)])
 
 const STATUS_OPTIONS: { value: OrderStatus; label: string; en: string; color: string }[] = [
-  { value: 'pending', label: 'পেন্ডিং', en: 'Pending', color: 'bg-amber-100 text-amber-800 border-amber-200' },
-  { value: 'confirmed', label: 'কনফার্মড', en: 'Confirmed', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-  { value: 'shipped', label: 'শিপড', en: 'Shipped', color: 'bg-purple-100 text-purple-800 border-purple-200' },
-  { value: 'delivered', label: 'ডেলিভারড', en: 'Delivered', color: 'bg-green-100 text-green-800 border-green-200' },
-  { value: 'cancelled', label: 'ক্যানসেল', en: 'Cancelled', color: 'bg-red-100 text-red-800 border-red-200' },
+  { value: 'pending',          label: 'পেন্ডিং',        en: 'Pending',          color: 'bg-amber-100 text-amber-800 border-amber-200' },
+  { value: 'confirmed',        label: 'কনফার্মড',        en: 'Confirmed',        color: 'bg-blue-100 text-blue-800 border-blue-200' },
+  { value: 'processing',       label: 'প্রসেসিং',        en: 'Processing',       color: 'bg-sky-100 text-sky-800 border-sky-200' },
+  { value: 'packed',           label: 'প্যাকড',          en: 'Packed',           color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+  { value: 'shipped',          label: 'শিপড',            en: 'Shipped',          color: 'bg-purple-100 text-purple-800 border-purple-200' },
+  { value: 'out_for_delivery', label: 'ডেলিভারিতে',     en: 'Out for Delivery', color: 'bg-violet-100 text-violet-800 border-violet-200' },
+  { value: 'delivered',        label: 'ডেলিভারড',        en: 'Delivered',        color: 'bg-green-100 text-green-800 border-green-200' },
+  { value: 'cancelled',        label: 'ক্যানসেল',        en: 'Cancelled',        color: 'bg-red-100 text-red-800 border-red-200' },
+  { value: 'returned',         label: 'রিটার্নড',        en: 'Returned',         color: 'bg-orange-100 text-orange-800 border-orange-200' },
+  { value: 'refunded',         label: 'রিফান্ডেড',       en: 'Refunded',         color: 'bg-rose-100 text-rose-800 border-rose-200' },
 ]
 
 function statusMeta(s?: OrderStatus) {

@@ -14,20 +14,76 @@ const NAV_LINKS = [
   { href: "#faq", label: "FAQ" },
 ];
 
-const PHONE_DISPLAY = "+880 1708-467621";
-const PHONE_TEL = "+880 1708-467621";
+const PHONE_DISPLAY = "+880 17825-21705";
+const PHONE_TEL = "+880 17825-21705";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // ─── Bangla date helpers ───────────────────────────────────────────────────────
 
-const BN_MONTHS_BN = ["বৈশাখ","জ্যৈষ্ঠ","আষাঢ়","শ্রাবণ","ভাদ্র","আশ্বিন","কার্তিক","অগ্রহায়ণ","পৌষ","মাঘ","ফাল্গুন","চৈত্র"];
-const BN_MONTHS_EN = ["Boishakh","Joishtho","Ashar","Shrabon","Bhadro","Ashshin","Kartik","Ogrohayon","Poush","Magh","Falgun","Choitro"];
-const BN_WEEKDAYS_BN = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
-const BN_WEEKDAYS_EN = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-const BN_SEASONS_BN = ["গ্রীষ্ম-কাল","বর্ষা-কাল","শরৎ-কাল","হেমন্ত-কাল","শীত-কাল","বসন্ত-কাল"];
-const BN_SEASONS_EN = ["Grishmo-Kal","Borsha-Kal","Shorot-Kal","Hemonto-Kal","Sheet-Kal","Boshonto-Kal"];
-const BN_DIGITS = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
+const BN_MONTHS_BN = [
+  "বৈশাখ",
+  "জ্যৈষ্ঠ",
+  "আষাঢ়",
+  "শ্রাবণ",
+  "ভাদ্র",
+  "আশ্বিন",
+  "কার্তিক",
+  "অগ্রহায়ণ",
+  "পৌষ",
+  "মাঘ",
+  "ফাল্গুন",
+  "চৈত্র",
+];
+const BN_MONTHS_EN = [
+  "Boishakh",
+  "Joishtho",
+  "Ashar",
+  "Shrabon",
+  "Bhadro",
+  "Ashshin",
+  "Kartik",
+  "Ogrohayon",
+  "Poush",
+  "Magh",
+  "Falgun",
+  "Choitro",
+];
+const BN_WEEKDAYS_BN = [
+  "রবিবার",
+  "সোমবার",
+  "মঙ্গলবার",
+  "বুধবার",
+  "বৃহস্পতিবার",
+  "শুক্রবার",
+  "শনিবার",
+];
+const BN_WEEKDAYS_EN = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const BN_SEASONS_BN = [
+  "গ্রীষ্ম-কাল",
+  "বর্ষা-কাল",
+  "শরৎ-কাল",
+  "হেমন্ত-কাল",
+  "শীত-কাল",
+  "বসন্ত-কাল",
+];
+const BN_SEASONS_EN = [
+  "Grishmo-Kal",
+  "Borsha-Kal",
+  "Shorot-Kal",
+  "Hemonto-Kal",
+  "Sheet-Kal",
+  "Boshonto-Kal",
+];
+const BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
 
 function toBnDigits(n: number | string) {
   return String(n).replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
@@ -42,10 +98,14 @@ function ordinalSuffixEn(day: number) {
   const v = day % 100;
   if (v >= 11 && v <= 13) return "th";
   switch (day % 10) {
-    case 1: return "st";
-    case 2: return "nd";
-    case 3: return "rd";
-    default: return "th";
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
   }
 }
 function isGregorianLeap(y: number) {
@@ -62,10 +122,25 @@ function toBanglaDate(date: Date) {
     dayOfBnYear = Math.floor((date.getTime() - epochPrev.getTime()) / 86400000);
   } else {
     bn_year = g_year - 593;
-    dayOfBnYear = Math.floor((date.getTime() - epochThisYear.getTime()) / 86400000);
+    dayOfBnYear = Math.floor(
+      (date.getTime() - epochThisYear.getTime()) / 86400000,
+    );
   }
   const nextGregLeap = isGregorianLeap(bn_year + 594);
-  const monthLengths = [31,31,31,31,31,30,30,30,30,30,30,nextGregLeap ? 31 : 30];
+  const monthLengths = [
+    31,
+    31,
+    31,
+    31,
+    31,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    nextGregLeap ? 31 : 30,
+  ];
   let monthIdx = 0;
   let remaining = dayOfBnYear;
   while (remaining >= monthLengths[monthIdx]) {
@@ -95,14 +170,39 @@ function toBanglaDate(date: Date) {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Banner = { images: string[]; alt: string; variety: string; harvestDate: string | null };
+type Banner = {
+  images: string[];
+  alt: string;
+  variety: string;
+  harvestDate: string | null;
+};
 
 // Fallback banners shown while API loads
 const FALLBACK: Banner[] = [
-  { images: ["/mangoImage/ban/himsagor.JPG.jpeg", "/mangoImage/Himsagor_1.png"], alt: "হিমসাগর আম", variety: "হিমসাগর", harvestDate: null },
-  { images: ["/mangoImage/Himsagor_1.png"],        alt: "হিমসাগর",              variety: "হিমসাগর", harvestDate: null },
-  { images: ["/mangoImage/Gopalvog_1.png"],        alt: "গোপালভোগ",             variety: "গোপালভোগ", harvestDate: null },
-  { images: ["/mangoImage/amrupali.png"],          alt: "আম্রপালি",             variety: "আম্রপালি", harvestDate: null },
+  {
+    images: ["/mangoImage/ban/himsagor.JPG.jpeg", "/mangoImage/Himsagor_1.png"],
+    alt: "হিমসাগর আম",
+    variety: "হিমসাগর",
+    harvestDate: null,
+  },
+  {
+    images: ["/mangoImage/Himsagor_1.png"],
+    alt: "হিমসাগর",
+    variety: "হিমসাগর",
+    harvestDate: null,
+  },
+  {
+    images: ["/mangoImage/Gopalvog_1.png"],
+    alt: "গোপালভোগ",
+    variety: "গোপালভোগ",
+    harvestDate: null,
+  },
+  {
+    images: ["/mangoImage/amrupali.png"],
+    alt: "আম্রপালি",
+    variety: "আম্রপালি",
+    harvestDate: null,
+  },
 ];
 
 function formatStamp(iso: string) {
@@ -113,22 +213,34 @@ function formatStamp(iso: string) {
   const m = String(d.getMinutes()).padStart(2, "0");
   const ampm = h >= 12 ? "PM" : "AM";
   h = h % 12 || 12;
-  return { date: `${mm}.${dd}`, time: `${String(h).padStart(2, "0")}:${m}`, ampm };
+  return {
+    date: `${mm}.${dd}`,
+    time: `${String(h).padStart(2, "0")}:${m}`,
+    ampm,
+  };
 }
 
 export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [images, setImages] = useState<Banner[]>(FALLBACK);
-  const [bnDate, setBnDate] = useState<ReturnType<typeof toBanglaDate> | null>(null);
+  const [bnDate, setBnDate] = useState<ReturnType<typeof toBanglaDate> | null>(
+    null,
+  );
 
   // Fetch banners — pick first image from each of the first 4 active banners
   useEffect(() => {
     fetch(`${BASE_URL}/hero-banners`)
       .then((r) => r.json())
       .then((json) => {
-        const banners: { title: string; images: string[]; isActive: boolean; harvestDate: string | null }[] =
-          json?.data ?? [];
-        const active = banners.filter((b) => b.isActive && b.images.length > 0).slice(0, 4);
+        const banners: {
+          title: string;
+          images: string[];
+          isActive: boolean;
+          harvestDate: string | null;
+        }[] = json?.data ?? [];
+        const active = banners
+          .filter((b) => b.isActive && b.images.length > 0)
+          .slice(0, 4);
         if (active.length === 0) return;
         setImages(
           active.map((b) => ({
@@ -136,7 +248,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
             alt: b.title,
             variety: b.title,
             harvestDate: b.harvestDate,
-          }))
+          })),
         );
       })
       .catch(() => {});
@@ -148,12 +260,15 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
     tick();
     const now = new Date();
     const msUntilMidnight =
-      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() -
+      now.getTime();
     const id = setTimeout(tick, msUntilMidnight + 1000);
     return () => clearTimeout(id);
   }, []);
 
-  const stamp = images[0]?.harvestDate ? formatStamp(images[0].harvestDate) : null;
+  const stamp = images[0]?.harvestDate
+    ? formatStamp(images[0].harvestDate)
+    : null;
 
   // Ensure we always have 4 slots (pad with fallback if API returns fewer)
   const cells = [...images, ...FALLBACK].slice(0, 4);
@@ -164,13 +279,19 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
       <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="leading-tight">
-            <p className="font-display text-lg sm:text-2xl font-medium text-foreground">রাজশাহী ম্যাঙ্গো</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">Since 2025</p>
+            <p className="font-display text-lg sm:text-2xl font-medium text-foreground">
+              রাজশাহী ম্যাঙ্গো
+            </p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">
+              Since 2025
+            </p>
           </div>
 
           <nav className="hidden md:flex items-center gap-7 text-base font-medium text-foreground/80">
             {NAV_LINKS.map((l) => (
-              <a key={l.href} href={l.href} className="hover:text-primary">{l.label}</a>
+              <a key={l.href} href={l.href} className="hover:text-primary">
+                {l.label}
+              </a>
             ))}
           </nav>
 
@@ -186,7 +307,11 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-border hover:bg-muted transition-colors"
               aria-label="মেনু"
             >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {menuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -210,11 +335,16 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
       {/* Hero content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 lg:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-
           {/* Left: copy */}
           <div className="order-2 lg:order-1">
-            <div className="mb-6 flex items-start gap-2.5 min-h-11" suppressHydrationWarning>
-              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" aria-hidden />
+            <div
+              className="mb-6 flex items-start gap-2.5 min-h-11"
+              suppressHydrationWarning
+            >
+              <span
+                className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0"
+                aria-hidden
+              />
               {bnDate && (
                 <div className="leading-tight">
                   <p className="font-display text-base sm:text-lg font-medium text-secondary">
@@ -240,7 +370,9 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
             <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-medium text-foreground leading-[1.05] mb-6">
               রাজশাহীর বাগান <br />
               <span>থেকে</span>
-              <span className="text-primary mx-6 font-extrabold">সরাসরি</span>{" "}
+              <span className="text-primary mx-6 font-extrabold">
+                সরাসরি
+              </span>{" "}
               <br /> আপনার ঘরে
             </h1>
 
@@ -259,7 +391,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <a
-                href="https://wa.me/8801700000000"
+                href="https://wa.me/8801782521705?text=হ্যালো%20ম্যাঙ্গো%20হাউস"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border-2 border-secondary/30 text-secondary font-medium text-base hover:border-secondary hover:bg-secondary/8"
@@ -272,12 +404,16 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
           {/* Right: Bento Gallery */}
           <div className="hidden lg:block order-1 lg:order-2 relative">
             <div className="grid grid-cols-2 grid-rows-[1fr_1fr_auto] gap-2 h-140">
-
               {/* Cell 1 — tall left, spans 2 rows */}
               <div className="relative row-span-2 rounded-2xl overflow-hidden">
                 <figure className="hover-gallery w-full h-full">
                   {cells[0].images.map((src, i) => (
-                    <img key={i} src={src} alt={i === 0 ? cells[0].alt : ''} className="w-full h-full object-cover" />
+                    <img
+                      key={i}
+                      src={src}
+                      alt={i === 0 ? cells[0].alt : ""}
+                      className="w-full h-full object-cover"
+                    />
                   ))}
                 </figure>
                 <div className="absolute inset-0 bg-linear-to-t from-foreground/50 via-transparent to-transparent pointer-events-none" />
@@ -286,20 +422,32 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
                 <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-border/30 shadow-lg">
                   {stamp ? (
                     <>
-                      <p className="font-mono text-[11px] text-foreground/60 leading-none tracking-wider">{stamp.date}</p>
-                      <p className="font-mono text-lg font-medium text-primary leading-tight tracking-tight mt-0.5">{stamp.time}</p>
-                      <p className="font-mono text-[10px] text-foreground/50 leading-none">{stamp.ampm}</p>
+                      <p className="font-mono text-[11px] text-foreground/60 leading-none tracking-wider">
+                        {stamp.date}
+                      </p>
+                      <p className="font-mono text-lg font-medium text-primary leading-tight tracking-tight mt-0.5">
+                        {stamp.time}
+                      </p>
+                      <p className="font-mono text-[10px] text-foreground/50 leading-none">
+                        {stamp.ampm}
+                      </p>
                     </>
                   ) : (
                     <>
-                      <p className="font-mono text-[11px] text-foreground/60 leading-none tracking-wider">তাজা</p>
-                      <p className="font-display text-sm font-medium text-primary leading-tight mt-0.5">আম</p>
+                      <p className="font-mono text-[11px] text-foreground/60 leading-none tracking-wider">
+                        তাজা
+                      </p>
+                      <p className="font-display text-sm font-medium text-primary leading-tight mt-0.5">
+                        আম
+                      </p>
                     </>
                   )}
                 </div>
 
                 <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
-                  <p className="font-display text-white text-sm font-medium leading-tight">{cells[0].variety}</p>
+                  <p className="font-display text-white text-sm font-medium leading-tight">
+                    {cells[0].variety}
+                  </p>
                 </div>
               </div>
 
@@ -307,12 +455,19 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               <div className="relative rounded-2xl overflow-hidden">
                 <figure className="hover-gallery w-full h-full">
                   {cells[1].images.map((src, i) => (
-                    <img key={i} src={src} alt={i === 0 ? cells[1].alt : ''} className="w-full h-full object-cover" />
+                    <img
+                      key={i}
+                      src={src}
+                      alt={i === 0 ? cells[1].alt : ""}
+                      className="w-full h-full object-cover"
+                    />
                   ))}
                 </figure>
                 <div className="absolute inset-0 bg-linear-to-t from-foreground/40 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-2 left-3 right-3 pointer-events-none">
-                  <p className="font-display text-white text-xs font-medium">{cells[1].variety}</p>
+                  <p className="font-display text-white text-xs font-medium">
+                    {cells[1].variety}
+                  </p>
                 </div>
               </div>
 
@@ -320,12 +475,19 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               <div className="relative rounded-2xl overflow-hidden">
                 <figure className="hover-gallery w-full h-full">
                   {cells[2].images.map((src, i) => (
-                    <img key={i} src={src} alt={i === 0 ? cells[2].alt : ''} className="w-full h-full object-cover" />
+                    <img
+                      key={i}
+                      src={src}
+                      alt={i === 0 ? cells[2].alt : ""}
+                      className="w-full h-full object-cover"
+                    />
                   ))}
                 </figure>
                 <div className="absolute inset-0 bg-linear-to-t from-foreground/40 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-2 left-3 right-3 pointer-events-none">
-                  <p className="font-display text-white text-xs font-medium">{cells[2].variety}</p>
+                  <p className="font-display text-white text-xs font-medium">
+                    {cells[2].variety}
+                  </p>
                 </div>
               </div>
 
@@ -333,18 +495,23 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               <div className="relative col-span-2 h-36 rounded-2xl overflow-hidden">
                 <figure className="hover-gallery w-full h-full">
                   {cells[3].images.map((src, i) => (
-                    <img key={i} src={src} alt={i === 0 ? cells[3].alt : ''} className="w-full h-full object-cover object-center" />
+                    <img
+                      key={i}
+                      src={src}
+                      alt={i === 0 ? cells[3].alt : ""}
+                      className="w-full h-full object-cover object-center"
+                    />
                   ))}
                 </figure>
                 <div className="absolute inset-0 bg-linear-to-r from-foreground/50 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute inset-y-0 left-4 flex flex-col justify-center pointer-events-none">
-                  <p className="font-display text-white text-sm font-medium">{cells[3].variety}</p>
+                  <p className="font-display text-white text-sm font-medium">
+                    {cells[3].variety}
+                  </p>
                 </div>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
     </>

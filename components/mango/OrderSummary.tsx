@@ -6,14 +6,6 @@ import type { CartItem } from '@/app/page'
 
 const MIN_ORDER_KG = 10
 
-const VARIETY_BN: Record<string, string> = {
-  gopalbhog: 'গোপালভোগ',
-  himsagar: 'হিমসাগর',
-  ranipochondo: 'রানীপছন্দ',
-  langra: 'ল্যাংড়া',
-  amrapali: 'আম্রপালি',
-  fazli: 'ফজলি',
-}
 
 interface OrderSummaryProps {
   cart: Map<string, CartItem>
@@ -84,7 +76,7 @@ export default function OrderSummary({ cart, subtotal, total, deliveryType, onPr
               {items.map((item) => (
                 <div key={item.variety} className="flex justify-between items-center text-sm">
                   <span className="text-foreground/80">
-                    {VARIETY_BN[item.variety] || item.variety} · {item.quantity} কেজি
+                    {item.name || item.variety} · {item.quantity} কেজি
                   </span>
                   <span className="font-semibold text-foreground">
                     ৳ {(item.price * item.quantity).toLocaleString()}

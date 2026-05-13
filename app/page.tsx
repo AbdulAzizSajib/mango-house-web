@@ -16,6 +16,7 @@ import { useCartStore } from '@/store/useCartStore'
 // Keep these exported so other components can import the types
 export interface CartItem {
   variety: string
+  name: string
   quantity: number
   price: number
 }
