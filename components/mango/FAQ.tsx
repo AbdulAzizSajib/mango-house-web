@@ -99,7 +99,7 @@ export default function FAQ() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-5 sm:px-6 pb-5 text-foreground/75 leading-relaxed">
+                    <p className="font-display px-5 sm:px-6 pb-5 text-foreground/75 leading-relaxed">
                       {faq.a}
                     </p>
                   </div>

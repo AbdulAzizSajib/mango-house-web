@@ -10,12 +10,13 @@ const MIN_ORDER_KG = 10
 interface OrderSummaryProps {
   cart: Map<string, CartItem>
   subtotal: number
+  deliveryCost: number
   total: number
   deliveryType: 'courier' | 'home'
   onProceedClick: () => void
 }
 
-export default function OrderSummary({ cart, subtotal, total, deliveryType, onProceedClick }: OrderSummaryProps) {
+export default function OrderSummary({ cart, subtotal, deliveryCost, total, deliveryType, onProceedClick }: OrderSummaryProps) {
   const [expanded, setExpanded] = useState(false)
 
   const isEmpty = cart.size === 0
@@ -26,7 +27,7 @@ export default function OrderSummary({ cart, subtotal, total, deliveryType, onPr
 
   if (isEmpty) return null
 
-  const deliveryLabel = deliveryType === 'home' ? 'হোম ডেলিভারি · ৳৯৫/কেজি' : 'কুরিয়ার কালেক্ট · ৳৮০/কেজি'
+  const deliveryLabel = deliveryType === 'home' ? 'হোম ডেলিভারি (+৳১৫/কেজি)' : 'কুরিয়ার কালেক্ট (ফ্রি)'
 
   return (
     <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-sm">
@@ -88,8 +89,14 @@ export default function OrderSummary({ cart, subtotal, total, deliveryType, onPr
             {/* Totals */}
             <div className="border-t border-border/50 pt-2 space-y-1 text-sm">
               <div className="flex justify-between text-foreground/70">
-                <span>ডেলিভারি ধরন</span>
-                <span className="text-foreground font-medium">{deliveryLabel}</span>
+                <span>আমের দাম</span>
+                <span className="text-foreground font-medium">৳ {subtotal.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-foreground/70">
+                <span>{deliveryLabel}</span>
+                <span className="text-foreground font-medium">
+                  {deliveryCost > 0 ? `৳ ${deliveryCost.toLocaleString()}` : 'ফ্রি'}
+                </span>
               </div>
               <div className="flex justify-between font-medium text-foreground pt-1 border-t border-border/50">
                 <span>সর্বমোট</span>
