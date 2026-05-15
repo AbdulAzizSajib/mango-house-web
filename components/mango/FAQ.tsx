@@ -119,14 +119,14 @@ export default function FAQ() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href="tel:+8801782521705"
+              href="tel:+8801708467621"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-foreground text-background font-medium hover:bg-foreground/90"
             >
               <Phone className="w-4 h-4" />
-              01782521705
+              01708467621
             </a>
             <a
-              href="https://wa.me/8801782521705?text=আমার%20অর্ডার%20সম্পর্কে%20সাহায্য%20দরকার"
+              href="https://wa.me/8801708467621?text=আমার%20অর্ডার%20সম্পর্কে%20সাহায্য%20দরকার"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-secondary text-secondary-foreground font-medium hover:bg-secondary/90"

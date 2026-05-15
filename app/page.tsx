@@ -4,12 +4,10 @@ import { useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import HeroSection from '@/components/mango/HeroSection'
 import ProductSection from '@/components/mango/ProductSection'
-import Testimonials from '@/components/mango/Testimonials'
 import MangoCareGuide from '@/components/mango/MangoCareGuide'
 import FAQ from '@/components/mango/FAQ'
 import OrderSummary from '@/components/mango/OrderSummary'
 import Footer from '@/components/mango/Footer'
-import AnnouncementPopup from '@/components/mango/AnnouncementPopup'
 import { useCartStore } from '@/store/useCartStore'
 
 // Keep these exported so other components can import the types
@@ -46,14 +44,13 @@ export default function Home() {
 
   return (
     <main className="w-full min-h-screen bg-background">
-      <AnnouncementPopup />
-      <HeroSection onShopNowClick={scrollToProducts} />
+<HeroSection onShopNowClick={scrollToProducts} />
 
       <div ref={productSectionRef}>
         <ProductSection cart={cart} updateCart={updateCart} deliveryType={deliveryType} pricePerKg={pricePerKg()} />
       </div>
 
-      <Testimonials />
+      {/* <Testimonials /> */}
       <MangoCareGuide />
       <FAQ />
       <Footer />

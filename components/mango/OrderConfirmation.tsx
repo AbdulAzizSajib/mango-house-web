@@ -192,7 +192,7 @@ export default function OrderConfirmation({
             </button>
 
             <a
-              href={`https://wa.me/8801782521705?text=${encodeURIComponent(`আমার অর্ডার সম্পর্কে সাহায্য দরকার। নাম: ${order.fullName}, ফোন: ${order.phone}`)}`}
+              href={`https://wa.me/8801708467621?text=${encodeURIComponent(`আমার অর্ডার সম্পর্কে সাহায্য দরকার। নাম: ${order.fullName}, ফোন: ${order.phone}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 inline-flex items-center justify-center gap-2.5 bg-secondary text-secondary-foreground font-medium py-3 rounded-full hover:scale-[1.01] active:scale-[0.98] hover:bg-secondary/90 transition-all"

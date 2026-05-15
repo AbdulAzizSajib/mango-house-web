@@ -320,7 +320,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
 
               {/* FIX: WhatsApp button now has the logo */}
               <a
-                href="https://wa.me/8801782521705"
+                href="https://wa.me/8801708467621"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full border-2 border-secondary/30 text-secondary font-medium text-base hover:border-secondary hover:bg-secondary/8 transition-all"

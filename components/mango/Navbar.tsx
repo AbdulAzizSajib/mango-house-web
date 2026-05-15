@@ -7,13 +7,12 @@ import { useCartStore } from "@/store/useCartStore";
 
 const NAV_LINKS = [
   { href: "/#products", label: "আমাদের আম" },
-  { href: "/#reviews", label: "রিভিউ" },
   { href: "/#care-guide", label: "যত্নের টিপস" },
   { href: "/#faq", label: "FAQ" },
 ];
 
-const PHONE_DISPLAY = "+880 17825-21705";
-const PHONE_TEL = "+880 17825-21705";
+const PHONE_DISPLAY = "+880 17084-67621";
+const PHONE_TEL = "+880 17084-67621";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -74,24 +73,22 @@ export default function Navbar() {
           {hasItems && (
             <button
               onClick={() => router.push("/checkout")}
-              className="flex items-center gap-2.5 px-3 sm:px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] hover:scale-[1.02] transition-all shadow-sm"
+              className="flex justify-between items-center gap-1 px-2 py-0.5 sm:px-2 sm:py-1 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] hover:scale-[1.02] transition-all shadow-sm"
             >
               <div className="relative shrink-0">
-                <ShoppingCart className="w-4 h-4" />
+                <ShoppingCart className="w-5 h-5" />
                 <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-primary-foreground text-primary text-[10px] font-bold flex items-center justify-center leading-none">
                   {cart.size}
                 </span>
               </div>
-              <span className="w-px h-5 bg-primary-foreground/20" />
-              <div className="flex  items-start leading-tight">
-                <span className="text-sm font-medium  tracking-wide uppercase">
-                  {kg} কেজি
-                </span>
-                <span className="w-px mx-2 h-5 bg-primary-foreground/20" />
-                <span className="text-sm font-bold font-mono tracking-tight">
-                  {amount.toLocaleString()} টাকা
-                </span>
-              </div>
+              {/* Mobile + Desktop: কেজি + টাকা */}
+              <span className="text-sm font-medium">
+                {kg.toLocaleString("bn-BD")} কেজি
+              </span>
+              <span className="w-px h-4 bg-primary-foreground/30" />
+              <span className="text-sm font-bold">
+                {amount.toLocaleString("bn-BD")} টাকা
+              </span>
             </button>
           )}
 

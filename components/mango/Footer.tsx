@@ -25,7 +25,7 @@ export default function Footer() {
           {/* FIX: WhatsApp actual logo instead of MessageCircle */}
 
           <a
-            href="https://wa.me/8801782521705"
+            href="https://wa.me/8801708467621"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 bg-primary text-primary-foreground font-medium px-7 py-3.5 rounded-full hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all whitespace-nowrap shrink-0"
@@ -95,10 +95,10 @@ export default function Footer() {
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 shrink-0 text-primary" />
                 <a
-                  href="tel:+8801782521705"
+                  href="tel:+8801708467621"
                   className="hover:text-background transition-colors"
                 >
-                  +880 17825-21705
+                  +880 17084-67621
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
@@ -117,7 +117,7 @@ export default function Footer() {
               <li className="flex items-center gap-2.5">
                 <img src="/whatsapp.png" alt="" className="w-4 h-4 shrink-0" />
                 <a
-                  href="https://wa.me/8801782521705"
+                  href="https://wa.me/8801708467621"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-background transition-colors"
@@ -147,7 +147,7 @@ export default function Footer() {
                 },
                 {
                   Icon: MessageCircle,
-                  href: "https://wa.me/8801782521705",
+                  href: "https://wa.me/8801708467621",
                   label: "WhatsApp",
                 },
               ].map(({ Icon, href, label }) => (
