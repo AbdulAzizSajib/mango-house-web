@@ -25,11 +25,12 @@ export interface OrderData {
   phone: string
   deliveryType: 'courier' | 'home'
   address: string
-  city: string
-  deliveryDate: string
+  district: string
+  policeStation: string
+  deliveryDate?: string
   notes?: string
-  paymentMethod: 'bkash' | 'nagad'
-  transactionId: string
+  paymentMethod?: 'bkash' | 'nagad'
+  transactionId?: string
 }
 
 export default function Home() {

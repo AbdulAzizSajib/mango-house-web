@@ -27,13 +27,16 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
-
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 shrink-0">
-          <img className="w-10 sm:w-12" src="/logo.png" alt="রাজশাহী ম্যাঙ্গো লোগো" />
+          <img
+            className="w-10 sm:w-12"
+            src="/logo.png"
+            alt="Rajshahi Mango logo"
+          />
           <div className="leading-tight">
             <p className="font-display text-base sm:text-xl font-medium text-foreground">
-              রাজশাহী ম্যাঙ্গো
+              Rajshahi Mango
             </p>
             <p className="text-[9px] sm:text-[10px] text-muted-foreground tracking-wider uppercase">
               Since 2025
@@ -44,7 +47,11 @@ export default function Navbar() {
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-foreground/75">
           {NAV_LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-primary transition-colors">
+            <a
+              key={l.href}
+              href={l.href}
+              className="hover:text-primary transition-colors"
+            >
               {l.label}
             </a>
           ))}
@@ -52,7 +59,6 @@ export default function Navbar() {
 
         {/* Right side actions */}
         <div className="flex items-center gap-2 sm:gap-3">
-
           {/* Desktop: WhatsApp + phone */}
           <a
             href={`tel:${PHONE_TEL}`}
@@ -77,12 +83,13 @@ export default function Navbar() {
                 </span>
               </div>
               <span className="w-px h-5 bg-primary-foreground/20" />
-              <div className="flex flex-col items-start leading-tight">
-                <span className="text-[10px] font-medium opacity-60 tracking-wide uppercase">
+              <div className="flex  items-start leading-tight">
+                <span className="text-sm font-medium  tracking-wide uppercase">
                   {kg} কেজি
                 </span>
+                <span className="w-px mx-2 h-5 bg-primary-foreground/20" />
                 <span className="text-sm font-bold font-mono tracking-tight">
-                  ৳ {amount.toLocaleString()}
+                  {amount.toLocaleString()} টাকা
                 </span>
               </div>
             </button>
@@ -94,7 +101,11 @@ export default function Navbar() {
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-border hover:bg-muted transition-colors"
             aria-label="মেনু"
           >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {menuOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </button>
         </div>
       </div>

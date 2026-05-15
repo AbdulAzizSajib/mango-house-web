@@ -43,12 +43,12 @@ export default function Footer() {
             <a href="/" className="flex items-center gap-2.5 mb-4">
               <img
                 src="/logo.png"
-                alt="রাজশাহী ম্যাঙ্গো"
+                alt="Rajshahi Mango"
                 className="w-10 h-10 object-contain"
               />
               <div className="leading-tight">
                 <p className="font-display text-xl font-medium">
-                  রাজশাহী ম্যাঙ্গো
+                  Rajshahi Mango
                 </p>
                 {/* FIX: was "Since 2015" — navbar says 2025, keeping consistent */}
                 <p className="text-[10px] text-background/55 tracking-wider uppercase">
@@ -173,7 +173,7 @@ export default function Footer() {
 
         {/* ── Bottom bar ── */}
         <div className="border-t border-background/15 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-background/45">
-          <p>© ২০২৫ রাজশাহী ম্যাঙ্গো। সব অধিকার সংরক্ষিত।</p>
+          <p>© ২০২৫ Rajshahi Mango। সব অধিকার সংরক্ষিত।</p>
           <p className="flex items-center gap-1.5">
             <Leaf className="w-3 h-3 text-primary" />
             বাংলাদেশে ভালোবাসা দিয়ে তৈরি

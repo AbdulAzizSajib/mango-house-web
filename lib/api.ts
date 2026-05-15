@@ -6,9 +6,10 @@ export interface OrderPayload {
   fullName: string
   phone: string
   address: string
-  city: string
+  district: string
+  policeStation: string
   deliveryType: 'courier' | 'home'
-  deliveryDate: string
+  deliveryDate?: string
   notes?: string
   subtotal: number
   total: number
@@ -24,9 +25,10 @@ export interface OrderResponse {
     fullName: string
     phone: string
     address: string
-    city: string
+    district: string
+    policeStation: string
     deliveryType: 'courier' | 'home'
-    deliveryDate: string
+    deliveryDate?: string
     notes?: string
     subtotal: number
     total: number

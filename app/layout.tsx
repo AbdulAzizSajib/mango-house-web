@@ -47,8 +47,8 @@ const SITE_URL = "https://www.rajshahimango.site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম",
-    template: "%s | রাজশাহী ম্যাঙ্গো",
+    default: "Rajshahi Mango — বাগান থেকে সরাসরি তাজা আম",
+    template: "%s | Rajshahi Mango",
   },
   description:
     "রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম। হিমসাগর, গোপালভোগ, আমরুপালি — সরাসরি বাগান থেকে আপনার দরজায়।",
@@ -64,9 +64,9 @@ export const metadata: Metadata = {
     "আম অর্ডার",
     "রাসায়নিকমুক্ত আম",
   ],
-  authors: [{ name: "রাজশাহী ম্যাঙ্গো" }],
-  creator: "রাজশাহী ম্যাঙ্গো",
-  publisher: "রাজশাহী ম্যাঙ্গো",
+  authors: [{ name: "Rajshahi Mango" }],
+  creator: "Rajshahi Mango",
+  publisher: "Rajshahi Mango",
   robots: {
     index: true,
     follow: true,
@@ -76,8 +76,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "bn_BD",
     url: SITE_URL,
-    siteName: "রাজশাহী ম্যাঙ্গো",
-    title: "রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম",
+    siteName: "Rajshahi Mango",
+    title: "Rajshahi Mango — বাগান থেকে সরাসরি তাজা আম",
     description:
       "রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম। সরাসরি বাগান থেকে আপনার দরজায়।",
     images: [
@@ -85,13 +85,13 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "রাজশাহী ম্যাঙ্গো — তাজা আম",
+        alt: "Rajshahi Mango — তাজা আম",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম",
+    title: "Rajshahi Mango — বাগান থেকে সরাসরি তাজা আম",
     description:
       "রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম।",
     images: ["/og-image.jpg"],

@@ -26,6 +26,7 @@ interface CartStore {
   total: () => number
 
   // actions
+  setHydrated: () => void
   updateCart: (variety: string, quantity: number, name?: string) => void
   setDeliveryType: (type: 'courier' | 'home') => void
   setSubmittedOrder: (order: OrderResponse['data']) => void
@@ -77,6 +78,8 @@ export const useCartStore = create<CartStore>()(
         })
       },
 
+      setHydrated: () => set({ _hasHydrated: true }),
+
       setDeliveryType: (type) => set({ deliveryType: type }),
 
       setSubmittedOrder: (order) => set({ submittedOrder: order }),
@@ -87,7 +90,7 @@ export const useCartStore = create<CartStore>()(
       name: 'mango-cart',
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
-        if (state) state._hasHydrated = true
+        state?.setHydrated()
       },
       partialize: (state) => ({
         cart: Array.from(state.cart.entries()),

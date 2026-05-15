@@ -12,10 +12,17 @@ import {
   Menu,
   X,
   Leaf,
+  Home,
 } from "lucide-react";
 import { getToken, clearToken } from "@/lib/api";
 
 const NAV = [
+  {
+    href: "/",
+    label: "হোম",
+    en: "Home",
+    icon: Home,
+  },
   {
     href: "/admin",
     label: "ড্যাশবোর্ড",
@@ -93,12 +100,12 @@ export default function AdminLayout({
         }`}
       >
         <div className="flex items-center gap-3 px-5 py-5 border-b border-border/60">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <Leaf className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center">
+            <img src="/logo.png" alt="Rajshahi Mango" />
           </div>
           <div className="leading-tight">
             <p className="font-display text-base font-medium text-foreground">
-              রাজশাহী ম্যাঙ্গো
+              Rajshahi Mango
             </p>
             <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50 mt-0.5">
               Admin
@@ -109,8 +116,10 @@ export default function AdminLayout({
         <nav className="px-3 py-4 space-y-1">
           {NAV.map(({ href, label, en, icon: Icon }) => {
             const active =
-              pathname === href ||
-              (href !== "/admin" && pathname.startsWith(href));
+              href === "/"
+                ? false
+                : pathname === href ||
+                  (href !== "/admin" && pathname.startsWith(href));
             return (
               <Link
                 key={href}

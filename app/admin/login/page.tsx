@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Leaf, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { loginAdmin, setToken, getToken } from '@/lib/api'
 
 export default function AdminLoginPage() {
@@ -36,11 +36,9 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-sm">
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-11 h-11 rounded-lg bg-primary flex items-center justify-center">
-            <Leaf className="w-6 h-6 text-primary-foreground" />
-          </div>
+          <img src="/logo.png" alt="Rajshahi Mango" className="w-12 h-12 object-contain" />
           <div className="leading-tight">
-            <p className="font-display text-xl font-medium text-foreground">রাজশাহী ম্যাঙ্গো</p>
+            <p className="font-display text-xl font-medium text-foreground">Rajshahi Mango</p>
             <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-foreground/50 mt-0.5">Admin Login</p>
           </div>
         </div>

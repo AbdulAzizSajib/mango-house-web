@@ -212,7 +212,7 @@ function OrderDetail({
               </p>
               <p className="flex items-start gap-2 text-foreground/75">
                 <MapPin className="w-3.5 h-3.5 text-foreground/40 mt-0.5 shrink-0" />
-                <span>{order.address}, {order.city}</span>
+                <span>{order.address}, {order.policeStation}, {order.district}</span>
               </p>
             </div>
           </section>
