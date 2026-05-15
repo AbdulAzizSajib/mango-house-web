@@ -99,6 +99,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logo.png", type: "image/png" },
+    ],
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -112,6 +119,19 @@ export default function RootLayout({
       className={`${shadhinata.variable} ${notoSerifBengali.variable} ${hindSiliguri.variable} ${jetbrainsMono.variable} bg-background`}
     >
       <body className="font-body antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Rajshahi Mango",
+              url: SITE_URL,
+              logo: `${SITE_URL}/logo.png`,
+              sameAs: [],
+            }),
+          }}
+        />
         <QueryProvider>{children}</QueryProvider>
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
