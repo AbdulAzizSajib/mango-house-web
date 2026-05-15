@@ -1,26 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Navbar from "./Navbar";
 
 interface HeroSectionProps {
   onShopNowClick: () => void;
 }
 
-const NAV_LINKS = [
-  { href: "#products", label: "আমাদের আম" },
-  { href: "#reviews", label: "রিভিউ" },
-  { href: "#care-guide", label: "যত্নের টিপস" },
-  { href: "#faq", label: "FAQ" },
-];
-
-const PHONE_DISPLAY = "+880 17825-21705";
-const PHONE_TEL = "+880 17825-21705";
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // ─── Bangla date helpers ───────────────────────────────────────────────────────
-
 const BN_MONTHS_BN = [
   "বৈশাখ",
   "জ্যৈষ্ঠ",
@@ -168,8 +158,7 @@ function toBanglaDate(date: Date) {
   };
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
+// ─── Types ─────────────────────────────────────────────────────────────────────
 type Banner = {
   images: string[];
   alt: string;
@@ -177,7 +166,6 @@ type Banner = {
   harvestDate: string | null;
 };
 
-// Fallback banners shown while API loads
 const FALLBACK: Banner[] = [
   {
     images: ["/mangoImage/ban/himsagor.JPG.jpeg", "/mangoImage/Himsagor_1.png"],
@@ -221,13 +209,11 @@ function formatStamp(iso: string) {
 }
 
 export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [images, setImages] = useState<Banner[]>(FALLBACK);
   const [bnDate, setBnDate] = useState<ReturnType<typeof toBanglaDate> | null>(
     null,
   );
 
-  // Fetch banners — pick first image from each of the first 4 active banners
   useEffect(() => {
     fetch(`${BASE_URL}/hero-banners`)
       .then((r) => r.json())
@@ -254,7 +240,6 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
       .catch(() => {});
   }, []);
 
-  // Bangla date
   useEffect(() => {
     const tick = () => setBnDate(toBanglaDate(new Date()));
     tick();
@@ -269,74 +254,17 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
   const stamp = images[0]?.harvestDate
     ? formatStamp(images[0].harvestDate)
     : null;
-
-  // Ensure we always have 4 slots (pad with fallback if API returns fewer)
   const cells = [...images, ...FALLBACK].slice(0, 4);
 
   return (
     <>
-      {/* Top navigation */}
-      <header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="leading-tight">
-            <p className="font-display text-lg sm:text-2xl font-medium text-foreground">
-              রাজশাহী ম্যাঙ্গো
-            </p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground tracking-wider uppercase">
-              Since 2025
-            </p>
-          </div>
+      <Navbar />
 
-          <nav className="hidden md:flex items-center gap-7 text-base font-medium text-foreground/80">
-            {NAV_LINKS.map((l) => (
-              <a key={l.href} href={l.href} className="hover:text-primary">
-                {l.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href={`tel:${PHONE_TEL}`}
-              className="font-mono text-[13px] sm:text-sm tracking-tight text-foreground/90 underline underline-offset-[6px] decoration-foreground/40 hover:decoration-foreground"
-            >
-              {PHONE_DISPLAY}
-            </a>
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-border hover:bg-muted transition-colors"
-              aria-label="মেনু"
-            >
-              {menuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <nav className="md:hidden border-t border-border/60 bg-background/95 backdrop-blur-md px-4 py-3 flex flex-col gap-1">
-            {NAV_LINKS.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="px-3 py-3 rounded-xl text-base font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-        )}
-      </header>
-
-      {/* Hero content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 lg:py-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Left: copy */}
+          {/* ── Left: copy ── */}
           <div className="order-2 lg:order-1">
+            {/* Bangla date */}
             <div
               className="mb-6 flex items-start gap-2.5 min-h-11"
               suppressHydrationWarning
@@ -367,13 +295,11 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               )}
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-medium text-foreground leading-[1.05] mb-6">
-              রাজশাহীর বাগান <br />
-              <span>থেকে</span>
-              <span className="text-primary mx-6 font-extrabold">
-                সরাসরি
-              </span>{" "}
-              <br /> আপনার ঘরে
+            {/* FIX: cleaner heading — no awkward mid-line breaks on mobile */}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-medium text-foreground leading-[1.08] mb-6">
+              রাজশাহীর বাগান থেকে{" "}
+              <span className="text-primary font-extrabold">সরাসরি</span> আপনার
+              ঘরে
             </h1>
 
             <p className="text-base sm:text-lg text-foreground/70 leading-relaxed mb-8 max-w-xl">
@@ -382,30 +308,71 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               পয়েন্টে পৌঁছে দেওয়া হয়।
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-10">
               <button
                 onClick={onShopNowClick}
-                className="group inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-primary text-primary-foreground text-base hover:bg-primary/90 card-elevated hover:scale-[1.02] font-medium"
+                className="group inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-primary text-primary-foreground text-base hover:bg-primary/90 card-elevated hover:scale-[1.02] active:scale-[0.98] font-medium transition-all"
               >
                 আম দেখুন
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
+
+              {/* FIX: WhatsApp button now has the logo */}
               <a
-                href="https://wa.me/8801782521705?text=হ্যালো%20ম্যাঙ্গো%20হাউস"
+                href="https://wa.me/8801782521705"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border-2 border-secondary/30 text-secondary font-medium text-base hover:border-secondary hover:bg-secondary/8"
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-full border-2 border-secondary/30 text-secondary font-medium text-base hover:border-secondary hover:bg-secondary/8 transition-all"
               >
+                <img src="/whatsapp.png" alt="" className="w-5 h-5" />
                 হোয়াটসঅ্যাপে অর্ডার
               </a>
             </div>
+
+            {/* FIX: mobile — show a single featured image instead of nothing */}
+            <div className="lg:hidden relative rounded-2xl overflow-hidden h-56 sm:h-72 w-full">
+              <figure className="hover-gallery w-full h-full">
+                {cells[0].images.map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt={i === 0 ? cells[0].alt : ""}
+                    className="w-full h-full object-cover"
+                  />
+                ))}
+              </figure>
+              <div className="absolute inset-0 bg-linear-to-t from-foreground/50 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-4">
+                <p className="font-display text-white text-base font-medium">
+                  {cells[0].variety}
+                </p>
+              </div>
+              {stamp && (
+                <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-border/30">
+                  <p className="font-mono text-[11px] text-foreground/60 leading-none tracking-wider">
+                    {stamp.date}
+                  </p>
+                  <p className="font-mono text-lg font-medium text-primary leading-tight tracking-tight mt-0.5">
+                    {stamp.time}
+                  </p>
+                  <p className="font-mono text-[10px] text-foreground/50 leading-none">
+                    {stamp.ampm}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Right: Bento Gallery */}
+          {/* ── Right: Bento Gallery (desktop only) ── */}
           <div className="hidden lg:block order-1 lg:order-2 relative">
-            <div className="grid grid-cols-2 grid-rows-[1fr_1fr_auto] gap-2 h-140">
+            {/* FIX: use aspect-based rows instead of hardcoded h-140 */}
+            <div
+              className="grid grid-cols-2 gap-2"
+              style={{ gridTemplateRows: "1fr 1fr 9rem" }}
+            >
               {/* Cell 1 — tall left, spans 2 rows */}
-              <div className="relative row-span-2 rounded-2xl overflow-hidden">
+              <div className="relative row-span-2 rounded-2xl overflow-hidden min-h-0">
                 <figure className="hover-gallery w-full h-full">
                   {cells[0].images.map((src, i) => (
                     <img
@@ -418,7 +385,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
                 </figure>
                 <div className="absolute inset-0 bg-linear-to-t from-foreground/50 via-transparent to-transparent pointer-events-none" />
 
-                {/* Stamp — top left */}
+                {/* Stamp */}
                 <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-sm rounded-xl px-3 py-2 border border-border/30 shadow-lg">
                   {stamp ? (
                     <>
@@ -452,7 +419,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               </div>
 
               {/* Cell 2 — top right */}
-              <div className="relative rounded-2xl overflow-hidden">
+              <div className="relative rounded-2xl overflow-hidden min-h-0">
                 <figure className="hover-gallery w-full h-full">
                   {cells[1].images.map((src, i) => (
                     <img
@@ -472,7 +439,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               </div>
 
               {/* Cell 3 — bottom right */}
-              <div className="relative rounded-2xl overflow-hidden">
+              <div className="relative rounded-2xl overflow-hidden min-h-0">
                 <figure className="hover-gallery w-full h-full">
                   {cells[2].images.map((src, i) => (
                     <img
@@ -492,7 +459,7 @@ export default function HeroSection({ onShopNowClick }: HeroSectionProps) {
               </div>
 
               {/* Cell 4 — wide bottom, spans 2 cols */}
-              <div className="relative col-span-2 h-36 rounded-2xl overflow-hidden">
+              <div className="relative col-span-2 rounded-2xl overflow-hidden">
                 <figure className="hover-gallery w-full h-full">
                   {cells[3].images.map((src, i) => (
                     <img

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import type { OrderResponse } from '@/lib/api'
 
 const PRICE_PER_KG = 80
@@ -15,6 +16,7 @@ interface CartStore {
   cart: Map<string, CartItem>
   deliveryType: 'courier' | 'home'
   submittedOrder: OrderResponse['data'] | null
+  _hasHydrated: boolean
 
   // computed
   pricePerKg: () => number
@@ -30,52 +32,81 @@ interface CartStore {
   resetOrder: () => void
 }
 
-export const useCartStore = create<CartStore>((set, get) => ({
-  cart: new Map(),
-  deliveryType: 'courier',
-  submittedOrder: null,
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set, get) => ({
+      cart: new Map(),
+      deliveryType: 'courier',
+      submittedOrder: null,
+      _hasHydrated: false,
 
-  // Product price is flat — delivery is a separate line.
-  pricePerKg: () => PRICE_PER_KG,
+      pricePerKg: () => PRICE_PER_KG,
 
-  totalKg: () => {
-    let kg = 0
-    get().cart.forEach((item) => { kg += item.quantity })
-    return kg
-  },
+      totalKg: () => {
+        let kg = 0
+        get().cart.forEach((item) => { kg += item.quantity })
+        return kg
+      },
 
-  subtotal: () => {
-    let sum = 0
-    get().cart.forEach((item) => { sum += item.price * item.quantity })
-    return sum
-  },
+      subtotal: () => {
+        let sum = 0
+        get().cart.forEach((item) => { sum += item.price * item.quantity })
+        return sum
+      },
 
-  deliveryCost: () =>
-    get().deliveryType === 'home' ? get().totalKg() * HOME_SURCHARGE_PER_KG : 0,
+      deliveryCost: () =>
+        get().deliveryType === 'home' ? get().totalKg() * HOME_SURCHARGE_PER_KG : 0,
 
-  total: () => get().subtotal() + get().deliveryCost(),
+      total: () => get().subtotal() + get().deliveryCost(),
 
-  updateCart: (variety, quantity, name) => {
-    set((state) => {
-      const newCart = new Map(state.cart)
-      if (quantity === 0) {
-        newCart.delete(variety)
-      } else {
-        const existing = state.cart.get(variety)
-        newCart.set(variety, {
-          variety,
-          name: name ?? existing?.name ?? variety,
-          quantity,
-          price: PRICE_PER_KG,
+      updateCart: (variety, quantity, name) => {
+        set((state) => {
+          const newCart = new Map(state.cart)
+          if (quantity === 0) {
+            newCart.delete(variety)
+          } else {
+            const existing = state.cart.get(variety)
+            newCart.set(variety, {
+              variety,
+              name: name ?? existing?.name ?? variety,
+              quantity,
+              price: PRICE_PER_KG,
+            })
+          }
+          return { cart: newCart }
         })
-      }
-      return { cart: newCart }
-    })
-  },
+      },
 
-  setDeliveryType: (type) => set({ deliveryType: type }),
+      setDeliveryType: (type) => set({ deliveryType: type }),
 
-  setSubmittedOrder: (order) => set({ submittedOrder: order }),
+      setSubmittedOrder: (order) => set({ submittedOrder: order }),
 
-  resetOrder: () => set({ cart: new Map(), deliveryType: 'courier', submittedOrder: null }),
-}))
+      resetOrder: () => set({ cart: new Map(), deliveryType: 'courier', submittedOrder: null }),
+    }),
+    {
+      name: 'mango-cart',
+      storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) state._hasHydrated = true
+      },
+      partialize: (state) => ({
+        cart: Array.from(state.cart.entries()),
+        deliveryType: state.deliveryType,
+        submittedOrder: state.submittedOrder,
+      }),
+      merge: (persisted, current) => {
+        const p = persisted as {
+          cart: [string, CartItem][]
+          deliveryType: 'courier' | 'home'
+          submittedOrder: OrderResponse['data'] | null
+        }
+        return {
+          ...current,
+          cart: new Map(p.cart ?? []),
+          deliveryType: p.deliveryType ?? 'courier',
+          submittedOrder: p.submittedOrder ?? null,
+        }
+      },
+    }
+  )
+)

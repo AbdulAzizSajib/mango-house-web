@@ -9,6 +9,7 @@ import MangoCareGuide from '@/components/mango/MangoCareGuide'
 import FAQ from '@/components/mango/FAQ'
 import OrderSummary from '@/components/mango/OrderSummary'
 import Footer from '@/components/mango/Footer'
+import AnnouncementPopup from '@/components/mango/AnnouncementPopup'
 import { useCartStore } from '@/store/useCartStore'
 
 // Keep these exported so other components can import the types
@@ -27,6 +28,8 @@ export interface OrderData {
   city: string
   deliveryDate: string
   notes?: string
+  paymentMethod: 'bkash' | 'nagad'
+  transactionId: string
 }
 
 export default function Home() {
@@ -42,6 +45,7 @@ export default function Home() {
 
   return (
     <main className="w-full min-h-screen bg-background">
+      <AnnouncementPopup />
       <HeroSection onShopNowClick={scrollToProducts} />
 
       <div ref={productSectionRef}>

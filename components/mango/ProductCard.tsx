@@ -8,6 +8,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  MapPin,
 } from "lucide-react";
 import type { ApiProduct } from "./ProductSection";
 
@@ -37,46 +38,53 @@ export default function ProductCard({
 
   return (
     <article
-      className={`group relative bg-card rounded-2xl overflow-hidden card-elevated card-hover ${isSelected ? "ring-2 ring-primary" : ""}`}
+      className={`group relative bg-card rounded-2xl overflow-hidden card-elevated card-hover transition-all ${
+        isSelected ? "ring-2 ring-primary" : ""
+      }`}
     >
-      {/* Image area */}
+      {/* ── Image area ── */}
       <div className="relative aspect-4/3 bg-muted overflow-hidden">
-        {/* Main image */}
         {images.length > 0 ? (
           images.map((src, i) => (
             <div
               key={src}
-              className={`absolute inset-0 transition-opacity duration-500 ${i === imgIndex ? "opacity-100" : "opacity-0"}`}
+              className={`absolute inset-0 transition-opacity duration-500 ${
+                i === imgIndex ? "opacity-100" : "opacity-0"
+              }`}
             >
               <Image
                 src={src}
-                alt={product.name}
+                alt={i === 0 ? product.name : ""}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover"
+                loading={i === 0 ? "eager" : "lazy"}
+                priority={i === 0}
               />
             </div>
           ))
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-foreground/30 text-xs">
-            no image
+            ছবি নেই
           </div>
         )}
 
-        {/* Prev / Next arrows */}
+        {/* FIX: arrows always visible on mobile, hover-only on desktop */}
         {hasMany && (
           <>
             <button
               type="button"
               onClick={prev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+              aria-label="আগের ছবি"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center shadow transition-opacity md:opacity-0 md:group-hover:opacity-100"
             >
               <ChevronLeft className="w-4 h-4 text-foreground" />
             </button>
             <button
               type="button"
               onClick={next}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow"
+              aria-label="পরের ছবি"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center shadow transition-opacity md:opacity-0 md:group-hover:opacity-100"
             >
               <ChevronRight className="w-4 h-4 text-foreground" />
             </button>
@@ -91,7 +99,10 @@ export default function ProductCard({
                 key={i}
                 type="button"
                 onClick={() => setImgIndex(i)}
-                className={`h-1 rounded-full transition-all ${i === imgIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"}`}
+                aria-label={`ছবি ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === imgIndex ? "w-4 bg-white" : "w-1.5 bg-white/50"
+                }`}
               />
             ))}
           </div>
@@ -99,37 +110,25 @@ export default function ProductCard({
 
         {/* Offer badge */}
         {product.offerPrice && (
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium shadow-sm">
+          <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium shadow-sm">
             অফার
           </div>
         )}
 
         {/* Selected check */}
         {isSelected && (
-          <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
-            <Check className="w-5 h-5" strokeWidth={3} />
+          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
+            <Check className="w-4 h-4" strokeWidth={3} />
           </div>
         )}
       </div>
 
-      {/* Body */}
+      {/* ── Body ── */}
       <div className="p-5 sm:p-6">
-        {/* Location & category */}
-        <div className="flex items-center justify-between text-[13px] uppercase tracking-wider text-muted-foreground font-medium mb-2">
+        {/* FIX: location uses lucide MapPin — no hardcoded SVG fill color */}
+        <div className="flex items-center justify-between text-[12px] uppercase tracking-wider text-muted-foreground font-medium mb-2.5">
           <span className="flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="#121313"
-                d="M19 9A7 7 0 1 0 5 9c0 1.387.409 2.677 1.105 3.765h-.008L12 22l5.903-9.235h-.007A6.97 6.97 0 0 0 19 9m-7 3a3 3 0 1 1 0-6a3 3 0 0 1 0 6"
-                strokeWidth="0.5"
-                stroke="#83CAFF"
-              />
-            </svg>
+            <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
             {product.location}
           </span>
           <span>{product.category}</span>
@@ -143,7 +142,7 @@ export default function ProductCard({
           {product.description}
         </p>
 
-        {/* Price */}
+        {/* Price row */}
         <div className="flex items-baseline justify-between mb-5 pb-5 border-b border-border/70">
           <div className="flex items-baseline gap-2">
             <p className="font-display text-3xl font-medium text-foreground">
@@ -172,8 +171,8 @@ export default function ProductCard({
           )}
         </div>
 
-        {/* Quantity selector */}
-        <div className="flex items-center gap-3">
+        {/* Quantity selector + delete */}
+        <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <select
               value={quantity}
@@ -184,12 +183,10 @@ export default function ProductCard({
                   : "border-border bg-card text-foreground hover:border-foreground/30"
               }`}
             >
-              {!isSelected && (
-                <option value={0}>অর্ডারের পরিমাণ নির্ধারণ করুন</option>
-              )}
+              {!isSelected && <option value={0}>পরিমাণ বেছে নিন</option>}
               {QUANTITY_OPTIONS.map((qty) => (
-                <option className="font-display" key={qty} value={qty}>
-                  {qty} কেজি — {(pricePerKg * qty).toLocaleString("bn-BD")} টাকা
+                <option key={qty} value={qty} className="font-display">
+                  {qty} কেজি — ৳{(pricePerKg * qty).toLocaleString("bn-BD")}
                 </option>
               ))}
             </select>
@@ -198,12 +195,16 @@ export default function ProductCard({
               strokeWidth={2.5}
             />
           </div>
+
+          {/* FIX: bigger hit area for delete, tooltip for clarity */}
           {isSelected && (
             <button
               onClick={() => onUpdateQuantity(0)}
-              className="text-destructive hover:text-destructive/80"
+              title="কার্ট থেকে সরান"
+              aria-label="কার্ট থেকে সরান"
+              className="w-11 h-11 flex items-center justify-center rounded-xl border border-destructive/30 text-destructive hover:bg-destructive/8 active:scale-95 transition-all"
             >
-              <Trash2 className="w-5 h-5" />
+              <Trash2 className="w-4 h-4" />
             </button>
           )}
         </div>

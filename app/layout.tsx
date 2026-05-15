@@ -1,57 +1,110 @@
-import type { Metadata } from 'next'
-import localFont from 'next/font/local'
-import { Noto_Serif_Bengali, Hind_Siliguri, JetBrains_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import QueryProvider from '@/providers/QueryProvider'
-import './globals.css'
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import {
+  Noto_Serif_Bengali,
+  Hind_Siliguri,
+  JetBrains_Mono,
+} from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import QueryProvider from "@/providers/QueryProvider";
+import "./globals.css";
 
 const shadhinata = localFont({
   src: [
-    { path: '../public/font/Shadhinata_Unicode.ttf', weight: '400', style: 'normal' },
+    {
+      path: "../public/font/Shadhinata_Unicode.ttf",
+      weight: "400",
+      style: "normal",
+    },
   ],
-  variable: '--font-sans',
-  display: 'swap',
-})
+  variable: "--font-sans",
+  display: "swap",
+});
 
 const notoSerifBengali = Noto_Serif_Bengali({
-  subsets: ['bengali', 'latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
-  variable: '--font-display',
-  display: 'swap',
-})
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 const hindSiliguri = Hind_Siliguri({
-  subsets: ['bengali', 'latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-body',
-  display: 'swap',
-})
+  subsets: ["bengali", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-mono',
-  display: 'swap',
-})
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const SITE_URL = "https://www.rajshahimango.site";
 
 export const metadata: Metadata = {
-  title: 'রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম',
-  description: 'বাংলাদেশের সেরা বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম। ক্যাশ অন ডেলিভারি, ২৪-৪৮ ঘণ্টায় সারা দেশে।',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon.png',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম",
+    template: "%s | রাজশাহী ম্যাঙ্গো",
   },
-}
+  description:
+    "রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম। হিমসাগর, গোপালভোগ, আমরুপালি — সরাসরি বাগান থেকে আপনার দরজায়।",
+  keywords: [
+    "রাজশাহী আম",
+    "তাজা আম",
+    "হিমসাগর আম",
+    "গোপালভোগ আম",
+    "আমরুপালি আম",
+    "Rajshahi mango",
+    "fresh mango Bangladesh",
+    "buy mango online",
+    "আম অর্ডার",
+    "রাসায়নিকমুক্ত আম",
+  ],
+  authors: [{ name: "রাজশাহী ম্যাঙ্গো" }],
+  creator: "রাজশাহী ম্যাঙ্গো",
+  publisher: "রাজশাহী ম্যাঙ্গো",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  openGraph: {
+    type: "website",
+    locale: "bn_BD",
+    url: SITE_URL,
+    siteName: "রাজশাহী ম্যাঙ্গো",
+    title: "রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম",
+    description:
+      "রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম। সরাসরি বাগান থেকে আপনার দরজায়।",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "রাজশাহী ম্যাঙ্গো — তাজা আম",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "রাজশাহী ম্যাঙ্গো — বাগান থেকে সরাসরি তাজা আম",
+    description:
+      "রাজশাহীর সেরা আম বাগান থেকে হাতে বাছাই করা, রাসায়নিকমুক্ত তাজা আম।",
+    images: ["/og-image.jpg"],
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html
@@ -59,11 +112,9 @@ export default function RootLayout({
       className={`${shadhinata.variable} ${notoSerifBengali.variable} ${hindSiliguri.variable} ${jetbrainsMono.variable} bg-background`}
     >
       <body className="font-body antialiased">
-        <QueryProvider>
-          {children}
-        </QueryProvider>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <QueryProvider>{children}</QueryProvider>
+        {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>
-  )
+  );
 }
