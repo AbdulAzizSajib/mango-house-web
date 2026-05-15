@@ -137,13 +137,8 @@ export default function Footer() {
               {[
                 {
                   Icon: Facebook,
-                  href: "https://facebook.com/themango.house",
+                  href: "https://www.facebook.com/people/Rajshahi-Mango/61589866529547/",
                   label: "Facebook",
-                },
-                {
-                  Icon: Instagram,
-                  href: "https://instagram.com/themango.house",
-                  label: "Instagram",
                 },
                 {
                   Icon: MessageCircle,
