@@ -16,7 +16,6 @@ export default function CheckoutPage() {
   const hasOrdered = submittedOrder !== null
   const hasItems = cart.size > 0
 
-  // Wait for localStorage to hydrate before redirecting
   useEffect(() => {
     if (!_hasHydrated) return
     if (!hasItems && !hasOrdered) router.replace('/')
@@ -31,17 +30,6 @@ export default function CheckoutPage() {
   const handlePlaceAnotherOrder = () => {
     resetOrder()
     router.push('/')
-  }
-
-  if (!_hasHydrated) {
-    return (
-      <main className="w-full min-h-screen bg-background flex flex-col">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-        </div>
-      </main>
-    )
   }
 
   return (

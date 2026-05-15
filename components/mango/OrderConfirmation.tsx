@@ -12,17 +12,6 @@ import {
 } from "lucide-react";
 import type { OrderResponse } from "@/lib/api";
 
-const CITY_BN: Record<string, string> = {
-  Dhaka: "ঢাকা",
-  Chittagong: "চট্টগ্রাম",
-  Sylhet: "সিলেট",
-  Rajshahi: "রাজশাহী",
-  Khulna: "খুলনা",
-  Barisal: "বরিশাল",
-  Mymensingh: "ময়মনসিংহ",
-  Rangpur: "রংপুর",
-};
-
 const NEXT_STEPS = [
   "আমরা আপনাকে কল করে ডেলিভারির বিস্তারিত নিশ্চিত করব",
   "আপনার আম সাবধানে প্যাক করে পাঠানো হবে",
@@ -79,7 +68,10 @@ export default function OrderConfirmation({
             Rajshahi Mango-কে বেছে নেওয়ার জন্য ধন্যবাদ 🥭
           </p>
           <p className="text-foreground/55 text-sm">
-            আমরা <span className="font-semibold text-foreground">{order.phone}</span>{" "}
+            আমরা{" "}
+            <span className="font-semibold text-lg mx-1 text-foreground">
+              {order.phone}
+            </span>{" "}
             নম্বরে কল করে নিশ্চিত করব
           </p>
         </div>
@@ -116,7 +108,7 @@ export default function OrderConfirmation({
                 ))}
               </div>
 
-              <div className="flex justify-between items-baseline mt-3 pt-3 border-t border-border/50">
+              <div className="flex justify-between items-baseline mt-3 pt-1 border-t border-border/50">
                 <span className="text-sm font-medium text-foreground/70">
                   সর্বমোট
                 </span>
@@ -127,7 +119,7 @@ export default function OrderConfirmation({
             </div>
 
             {/* Delivery info */}
-            <div className="p-4 sm:p-6 border-b border-border/60">
+            <div className="p-4 sm:px-6 border-b border-border/60">
               <h2 className="font-display text-base font-medium text-foreground mb-3 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
                 ডেলিভারি তথ্য
@@ -144,12 +136,8 @@ export default function OrderConfirmation({
                 <div className="flex items-start gap-2.5 text-foreground/80">
                   <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5 text-muted-foreground" />
                   <span>
-                    {order.address}, {CITY_BN[order.city] || order.city}
+                    {order.address}, {order.district}
                   </span>
-                </div>
-                <div className="flex items-center gap-2.5 text-foreground/80">
-                  <Calendar className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
-                  <span>{new Date(order.deliveryDate).toLocaleDateString("bn-BD", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-foreground/80">
                   <span className="w-3.5 h-3.5 shrink-0 flex items-center justify-center">
@@ -164,44 +152,11 @@ export default function OrderConfirmation({
                 {order.notes && (
                   <div className="flex items-start gap-2.5 text-foreground/80">
                     <span className="w-3.5 h-3.5 shrink-0 text-xs">📝</span>
-                    <span className="italic text-foreground/60">{order.notes}</span>
+                    <span className="italic text-foreground/60">
+                      {order.notes}
+                    </span>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Payment info */}
-            <div className="p-4 sm:p-6 border-b border-border/60 bg-muted/30">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-1">
-                    পেমেন্ট পদ্ধতি
-                  </p>
-                  {order.paymentMethod ? (
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={
-                          order.paymentMethod === "bkash"
-                            ? "/bkash.svg"
-                            : "/nagad.jpeg"
-                        }
-                        alt={order.paymentMethod}
-                        className="h-5 object-contain"
-                      />
-                      <span className="text-sm font-medium text-foreground capitalize">
-                        {order.paymentMethod === "bkash" ? "bKash" : "Nagad"} —
-                        পেমেন্ট সম্পন্ন
-                      </span>
-                    </div>
-                  ) : (
-                    <p className="text-sm font-medium text-foreground">
-                      ক্যাশ অন ডেলিভারি
-                    </p>
-                  )}
-                </div>
-                <span className="font-display text-xl font-semibold text-foreground">
-                  ৳{order.total.toLocaleString()}
-                </span>
               </div>
             </div>
 

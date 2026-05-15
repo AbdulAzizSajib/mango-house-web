@@ -30,6 +30,7 @@ interface CartStore {
   updateCart: (variety: string, quantity: number, name?: string) => void
   setDeliveryType: (type: 'courier' | 'home') => void
   setSubmittedOrder: (order: OrderResponse['data']) => void
+  clearCart: () => void
   resetOrder: () => void
 }
 
@@ -84,6 +85,8 @@ export const useCartStore = create<CartStore>()(
 
       setSubmittedOrder: (order) => set({ submittedOrder: order }),
 
+      clearCart: () => set({ cart: new Map(), deliveryType: 'courier' }),
+
       resetOrder: () => set({ cart: new Map(), deliveryType: 'courier', submittedOrder: null }),
     }),
     {
@@ -113,3 +116,4 @@ export const useCartStore = create<CartStore>()(
     }
   )
 )
+

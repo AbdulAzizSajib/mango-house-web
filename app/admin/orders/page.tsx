@@ -121,7 +121,7 @@ export default function AdminOrdersPage() {
                       <td className="px-4 py-3 font-medium text-foreground">{o.fullName}</td>
                       <td className="px-4 py-3 font-mono text-xs text-foreground/70">{o.phone}</td>
                       <td className="px-4 py-3 font-mono text-xs text-foreground/70">{formatDate(o.createdAt)}</td>
-                      <td className="px-4 py-3 text-right font-medium">৳ {toBn(o.total.toLocaleString())}</td>
+                      <td className="px-4 py-3 text-right font-medium">৳ {toBn((o.total ?? 0).toLocaleString())}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-medium ${meta.color}`}>
                           {meta.label}
@@ -254,7 +254,7 @@ function OrderDetail({
             </div>
             <div className="flex justify-between mt-3 pt-3 border-t border-border/60">
               <span className="font-medium">মোট</span>
-              <span className="font-display text-lg font-medium">৳ {toBn(order.total.toLocaleString())}</span>
+              <span className="font-display text-lg font-medium">৳ {toBn((order.total ?? 0).toLocaleString())}</span>
             </div>
           </section>
 

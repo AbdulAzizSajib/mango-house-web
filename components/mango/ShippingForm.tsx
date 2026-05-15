@@ -52,13 +52,13 @@ export default function ShippingForm({
   orderSummary,
   onOrderSuccess,
 }: ShippingFormProps) {
-  const { cart, setSubmittedOrder, resetOrder } = useCartStore();
+  const { cart, setSubmittedOrder, clearCart } = useCartStore();
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: postOrder,
     onSuccess: (res) => {
-      resetOrder();
       setSubmittedOrder(res.data);
+      clearCart();
       onOrderSuccess();
     },
   });

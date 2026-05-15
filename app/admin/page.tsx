@@ -8,23 +8,40 @@ import { authFetch } from '@/lib/api'
 const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
 const toBn = (n: number | string) => String(n).replace(/\d/g, (d) => BN_DIGITS[Number(d)])
 
+interface RecentOrder {
+  id: string
+  fullName: string
+  district: string
+  total: number
+  status: string
+  paymentMethod: string | null
+  createdAt: string
+}
+
 interface DashboardStats {
   orders: {
     total: number
-    pending: number
-    confirmed: number
-    processing: number
-    packed: number
-    shipped: number
-    outForDelivery: number
-    delivered: number
-    cancelled: number
-    returned: number
-    refunded: number
+    byStatus: {
+      pending: number
+      confirmed: number
+      processing: number
+      packed: number
+      shipped: number
+      outForDelivery: number
+      delivered: number
+      cancelled: number
+      returned: number
+      refunded: number
+    }
   }
-  totalRevenue: number
-  totalProducts: number
-  pendingTestimonials: number
+  revenue: {
+    realized: number
+    pending: number
+  }
+  products: { total: number }
+  testimonials: { total: number; pending: number; featured: number }
+  heroBanners: { total: number; active: number }
+  recentOrders: RecentOrder[]
 }
 
 export default function AdminDashboardPage() {
@@ -38,6 +55,7 @@ export default function AdminDashboardPage() {
   })
 
   const v = (n?: number) => isLoading ? '—' : isError ? '!' : toBn(n ?? 0)
+  const s = data?.orders.byStatus
 
   return (
     <div className="max-w-6xl">
@@ -49,10 +67,18 @@ export default function AdminDashboardPage() {
 
       {/* Primary stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-        <StatCard label="মোট অর্ডার" en="Total Orders" value={v(data?.orders.total)} loading={isLoading} error={isError} highlight />
-        <StatCard label="পেন্ডিং" en="Pending" value={v(data?.orders.pending)} loading={isLoading} error={isError} />
-        <StatCard label="মোট আয়" en="Revenue" value={isLoading ? '—' : isError ? '!' : `৳ ${toBn((data?.totalRevenue ?? 0).toLocaleString())}`} loading={isLoading} error={isError} />
-        <StatCard label="পণ্য" en="Products" value={v(data?.totalProducts)} loading={isLoading} error={isError} />
+        <StatCard label="মোট অর্ডার"   en="Total Orders" value={v(data?.orders.total)}      loading={isLoading} error={isError} highlight />
+        <StatCard label="পেন্ডিং"       en="Pending"      value={v(s?.pending)}               loading={isLoading} error={isError} />
+        <StatCard label="মোট আয়"       en="Realized"     value={isLoading ? '—' : isError ? '!' : `৳ ${toBn((data?.revenue.realized ?? 0).toLocaleString())}`} loading={isLoading} error={isError} />
+        <StatCard label="পেন্ডিং আয়"   en="Pending Rev." value={isLoading ? '—' : isError ? '!' : `৳ ${toBn((data?.revenue.pending ?? 0).toLocaleString())}`}  loading={isLoading} error={isError} />
+      </div>
+
+      {/* Secondary cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <StatCard label="পণ্য"          en="Products"     value={v(data?.products.total)}            loading={isLoading} error={isError} />
+        <StatCard label="রিভিউ পেন্ডিং" en="Reviews"      value={v(data?.testimonials.pending)}      loading={isLoading} error={isError} />
+        <StatCard label="হিরো ব্যানার"  en="Banners"      value={v(data?.heroBanners.active)}        loading={isLoading} error={isError} />
+        <StatCard label="ফিচার্ড রিভিউ" en="Featured"     value={v(data?.testimonials.featured)}    loading={isLoading} error={isError} />
       </div>
 
       {/* Order pipeline */}
@@ -65,53 +91,72 @@ export default function AdminDashboardPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
-              { label: 'কনফার্মড',    en: 'Confirmed',        n: data?.orders.confirmed },
-              { label: 'প্রসেসিং',    en: 'Processing',       n: data?.orders.processing },
-              { label: 'প্যাকড',      en: 'Packed',           n: data?.orders.packed },
-              { label: 'শিপড',        en: 'Shipped',          n: data?.orders.shipped },
-              { label: 'ডেলিভারিতে', en: 'Out for Delivery',  n: data?.orders.outForDelivery },
-            ].map((s) => (
-              <div key={s.en} className="text-center py-3 px-2 rounded-lg bg-muted/40">
-                <p className="font-display text-2xl font-medium text-foreground">{toBn(s.n ?? 0)}</p>
-                <p className="text-xs text-foreground/70 mt-0.5">{s.label}</p>
-                <p className="font-mono text-[9px] text-foreground/40 tracking-wider uppercase">{s.en}</p>
+              { label: 'কনফার্মড',    en: 'Confirmed',       n: s?.confirmed },
+              { label: 'প্রসেসিং',    en: 'Processing',      n: s?.processing },
+              { label: 'প্যাকড',      en: 'Packed',          n: s?.packed },
+              { label: 'শিপড',        en: 'Shipped',         n: s?.shipped },
+              { label: 'ডেলিভারিতে', en: 'Out for Delivery', n: s?.outForDelivery },
+            ].map((item) => (
+              <div key={item.en} className="text-center py-3 px-2 rounded-lg bg-muted/40">
+                <p className="font-display text-2xl font-medium text-foreground">{toBn(item.n ?? 0)}</p>
+                <p className="text-xs text-foreground/70 mt-0.5">{item.label}</p>
+                <p className="font-mono text-[9px] text-foreground/40 tracking-wider uppercase">{item.en}</p>
               </div>
             ))}
           </div>
         )}
 
-        {/* Delivered / Cancelled / Returned / Refunded */}
         {!isLoading && (
-          <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-border/40">
+          <div className="flex flex-wrap gap-4 mt-3 pt-3 border-t border-border/40">
             {[
-              { label: 'ডেলিভারড',  en: 'Delivered', n: data?.orders.delivered,  color: 'text-green-600' },
-              { label: 'ক্যানসেল',  en: 'Cancelled', n: data?.orders.cancelled,  color: 'text-red-500' },
-              { label: 'রিটার্নড',  en: 'Returned',  n: data?.orders.returned,   color: 'text-orange-500' },
-              { label: 'রিফান্ডেড', en: 'Refunded',  n: data?.orders.refunded,   color: 'text-rose-500' },
-            ].map((s) => (
-              <div key={s.en} className="flex items-center gap-2">
-                <span className={`font-display text-base font-medium ${s.color}`}>{toBn(s.n ?? 0)}</span>
-                <span className="text-xs text-foreground/60">{s.label}</span>
-                <span className="font-mono text-[9px] text-foreground/30 uppercase">{s.en}</span>
+              { label: 'ডেলিভারড',  en: 'Delivered', n: s?.delivered,  color: 'text-green-600' },
+              { label: 'ক্যানসেল',  en: 'Cancelled', n: s?.cancelled,  color: 'text-red-500' },
+              { label: 'রিটার্নড',  en: 'Returned',  n: s?.returned,   color: 'text-orange-500' },
+              { label: 'রিফান্ডেড', en: 'Refunded',  n: s?.refunded,   color: 'text-rose-500' },
+            ].map((item) => (
+              <div key={item.en} className="flex items-center gap-1.5">
+                <span className={`font-display text-base font-medium ${item.color}`}>{toBn(item.n ?? 0)}</span>
+                <span className="text-xs text-foreground/60">{item.label}</span>
               </div>
             ))}
-
-            {data && data.pendingTestimonials > 0 && (
-              <div className="ml-auto flex items-center gap-2">
-                <span className="font-display text-base font-medium text-amber-600">{toBn(data.pendingTestimonials)}</span>
-                <span className="text-xs text-foreground/60">পেন্ডিং রিভিউ</span>
-              </div>
-            )}
           </div>
         )}
       </div>
 
+      {/* Recent orders */}
+      {!isLoading && !isError && (data?.recentOrders?.length ?? 0) > 0 && (
+        <div className="bg-card border border-border/60 rounded-xl overflow-hidden mb-8">
+          <div className="px-5 py-4 border-b border-border/60 flex items-center justify-between">
+            <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50">Recent Orders</p>
+            <Link href="/admin/orders" className="font-mono text-[10px] tracking-[0.14em] uppercase text-primary hover:underline">
+              সব দেখুন
+            </Link>
+          </div>
+          <div className="divide-y divide-border/40">
+            {data!.recentOrders.map((o) => (
+              <div key={o.id} className="px-5 py-3 flex items-center justify-between gap-4 text-sm">
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground truncate">{o.fullName}</p>
+                  <p className="font-mono text-[10px] text-foreground/50">#{o.id.slice(0, 8)}</p>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="font-mono text-xs text-foreground/70">৳ {toBn(o.total.toLocaleString())}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-muted text-foreground/60">
+                    {o.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Shortcuts */}
       <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-foreground/55 mb-3">Quick Access</p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Shortcut href="/admin/orders"  icon={ShoppingBag}  label="অর্ডার ম্যানেজ" en="Manage Orders" />
-        <Shortcut href="/admin/photos"  icon={Images}       label="ছবি আপলোড"     en="Upload Photos" />
-        <Shortcut href="/admin/reviews" icon={MessageSquare} label="রিভিউ"         en="Reviews" />
+        <Shortcut href="/admin/orders"  icon={ShoppingBag}   label="অর্ডার ম্যানেজ" en="Manage Orders" />
+        <Shortcut href="/admin/photos"  icon={Images}        label="ছবি আপলোড"      en="Upload Photos" />
+        <Shortcut href="/admin/reviews" icon={MessageSquare} label="রিভিউ"           en="Reviews" />
       </div>
 
       {isError && (
