@@ -15,6 +15,7 @@ import {
   Truck,
   Store,
   Loader2,
+  SatelliteDishIcon,
 } from "lucide-react";
 import { postOrder } from "@/lib/api";
 import { useCartStore } from "@/store/useCartStore";
@@ -39,7 +40,7 @@ const formSchema = z.object({
     .regex(/^\d{10,11}$/, "ফোন নম্বর ১০-১১ ডিজিটের হতে হবে")
     .trim(),
   deliveryType: z.enum(["courier", "home"]),
-  address: z.string().min(10, "ঠিকানা কমপক্ষে ১০ অক্ষরের হতে হবে").trim(),
+  address: z.string().min(1).trim(),
   district: z.string().min(1, "জেলা বেছে নিন"),
   policeStation: z.string().min(1, "থানা বেছে নিন"),
   deliveryDate: z.string().optional(),
@@ -76,9 +77,11 @@ export default function ShippingForm({
   });
 
   const selectedDistrict = useWatch({ control, name: "district" });
-  const selectedDistrictCode = DList.find((d) => d.label === selectedDistrict)?.value ?? ""
+  const selectedDistrictCode =
+    DList.find((d) => d.label === selectedDistrict)?.value ?? "";
   const thanaList =
-    policeStationList[selectedDistrictCode as keyof typeof policeStationList] ?? [];
+    policeStationList[selectedDistrictCode as keyof typeof policeStationList] ??
+    [];
 
   const handleTypeChange = (type: "courier" | "home") => {
     onDeliveryTypeChange(type);
@@ -120,7 +123,7 @@ export default function ShippingForm({
             {/* STEP 1: Delivery type */}
             <div>
               <p className="text-sm font-medium text-foreground/80 mb-2">
-                ডেলিভারি পদ্ধতি বেছে নিন
+                ডেলিভারি পদ্ধতি বেছে নিন <span className="text-red-500">*</span>
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -146,7 +149,7 @@ export default function ShippingForm({
                       কুরিয়ার অফিস
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      সুন্দরবন / AJR পয়েন্ট
+                      নিকটস্থ সুন্দরবন / AJR পয়েন্ট থেকে সংগ্রহ
                     </p>
                     <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500 text-white">
                       ডেলিভারি ফ্রি
@@ -177,7 +180,7 @@ export default function ShippingForm({
                       হোম ডেলিভারি
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      দরজায় পৌঁছে দেওয়া হবে
+                      আপনার ঠিকানায় পৌঁছে দেওয়া হবে
                     </p>
                     <p
                       className={`text-xs font-display mt-1 ${deliveryType === "home" ? "text-primary" : "text-foreground/70"}`}
@@ -193,7 +196,8 @@ export default function ShippingForm({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>
-                  <User className="w-4 h-4" /> পূর্ণ নাম
+                  <User className="w-4 h-4" /> পূর্ণ নাম{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register("fullName")}
@@ -210,7 +214,8 @@ export default function ShippingForm({
               </div>
               <div>
                 <label className={labelClass}>
-                  <Phone className="w-4 h-4" /> মোবাইল নম্বর
+                  <Phone className="w-4 h-4" /> মোবাইল নম্বর{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register("phone")}
@@ -230,7 +235,8 @@ export default function ShippingForm({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>
-                  <Building2 className="w-4 h-4" /> জেলা
+                  <Building2 className="w-4 h-4" /> জেলা{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <select
                   {...register("district", {
@@ -253,7 +259,7 @@ export default function ShippingForm({
               </div>
               <div>
                 <label className={labelClass}>
-                  <MapPin className="w-4 h-4" /> থানা
+                  <SatelliteDishIcon className="w-4 h-4" /> থানা (ঐচ্ছিক)
                 </label>
                 <select
                   {...register("policeStation")}
@@ -281,7 +287,8 @@ export default function ShippingForm({
                 <MapPin className="w-4 h-4" />
                 {deliveryType === "courier"
                   ? "নিকটস্থ কুরিয়ার শাখার নাম"
-                  : "সম্পূর্ণ ঠিকানা"}
+                  : "সম্পূর্ণ ঠিকানা"}{" "}
+                <span className="text-red-500">*</span>
               </label>
               {deliveryType === "courier" && (
                 <p className="text-display font-bold text-sm mt-1 mb-2">
@@ -299,11 +306,6 @@ export default function ShippingForm({
                 rows={3}
                 className={`${inputClass} resize-none`}
               />
-              {errors.address && (
-                <p className="text-destructive text-sm mt-1.5 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" /> {errors.address.message}
-                </p>
-              )}
             </div>
 
             {/* STEP 5: Notes */}

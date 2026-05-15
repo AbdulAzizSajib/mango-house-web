@@ -75,18 +75,20 @@ export default function Navbar() {
               onClick={() => router.push("/checkout")}
               className="flex justify-between items-center gap-1 px-2 py-0.5 sm:px-2 sm:py-1 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97] hover:scale-[1.02] transition-all shadow-sm"
             >
-              <div className="relative shrink-0">
+              <div className="relative shrink-0 mr-3">
                 <ShoppingCart className="w-5 h-5" />
                 <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-primary-foreground text-primary text-[10px] font-bold flex items-center justify-center leading-none">
                   {cart.size}
                 </span>
               </div>
               {/* Mobile + Desktop: কেজি + টাকা */}
-              <span className="text-sm font-medium">
+              <span className="w-px h-4 bg-primary-foreground/30  " />
+
+              <span className="text-sm font-medium font-display">
                 {kg.toLocaleString("bn-BD")} কেজি
               </span>
-              <span className="w-px h-4 bg-primary-foreground/30" />
-              <span className="text-sm font-bold">
+              <span className="w-px h-4 bg-primary-foreground/30  " />
+              <span className="text-sm font-medium font-display">
                 {amount.toLocaleString("bn-BD")} টাকা
               </span>
             </button>
