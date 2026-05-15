@@ -18,12 +18,6 @@ import { getToken, clearToken } from "@/lib/api";
 
 const NAV = [
   {
-    href: "/",
-    label: "হোম",
-    en: "Home",
-    icon: Home,
-  },
-  {
     href: "/admin",
     label: "ড্যাশবোর্ড",
     en: "Dashboard",
@@ -145,7 +139,14 @@ export default function AdminLayout({
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-border/60">
+        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-border/60 space-y-1">
+          <Link
+            href="/"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground/75 hover:bg-muted hover:text-foreground transition-colors"
+          >
+            <Home className="w-4 h-4" />
+            হোম
+          </Link>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground/75 hover:bg-destructive/10 hover:text-destructive transition-colors"

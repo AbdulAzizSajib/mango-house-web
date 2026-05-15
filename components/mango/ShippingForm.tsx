@@ -76,8 +76,9 @@ export default function ShippingForm({
   });
 
   const selectedDistrict = useWatch({ control, name: "district" });
+  const selectedDistrictCode = DList.find((d) => d.label === selectedDistrict)?.value ?? ""
   const thanaList =
-    policeStationList[selectedDistrict as keyof typeof policeStationList] ?? [];
+    policeStationList[selectedDistrictCode as keyof typeof policeStationList] ?? [];
 
   const handleTypeChange = (type: "courier" | "home") => {
     onDeliveryTypeChange(type);
@@ -239,7 +240,7 @@ export default function ShippingForm({
                 >
                   <option value="">জেলা বেছে নিন</option>
                   {DList.map((d) => (
-                    <option key={d.value} value={d.value}>
+                    <option key={d.value} value={d.label}>
                       {d.label}
                     </option>
                   ))}

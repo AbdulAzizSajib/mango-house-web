@@ -2,23 +2,23 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Phone, MapPin, Package, X } from 'lucide-react'
-import { getOrders, updateOrderStatus, type AdminOrder, type OrderStatus } from '@/lib/api'
+import { Loader2, Phone, MapPin, Package, X, Trash2 } from 'lucide-react'
+import { getOrders, updateOrderStatus, deleteOrder, type AdminOrder, type OrderStatus } from '@/lib/api'
 
 const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
 const toBn = (n: number | string) => String(n).replace(/\d/g, (d) => BN_DIGITS[Number(d)])
 
-const STATUS_OPTIONS: { value: OrderStatus; label: string; en: string; color: string }[] = [
-  { value: 'pending',          label: 'পেন্ডিং',        en: 'Pending',          color: 'bg-amber-100 text-amber-800 border-amber-200' },
-  { value: 'confirmed',        label: 'কনফার্মড',        en: 'Confirmed',        color: 'bg-blue-100 text-blue-800 border-blue-200' },
-  { value: 'processing',       label: 'প্রসেসিং',        en: 'Processing',       color: 'bg-sky-100 text-sky-800 border-sky-200' },
-  { value: 'packed',           label: 'প্যাকড',          en: 'Packed',           color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-  { value: 'shipped',          label: 'শিপড',            en: 'Shipped',          color: 'bg-purple-100 text-purple-800 border-purple-200' },
-  { value: 'out_for_delivery', label: 'ডেলিভারিতে',     en: 'Out for Delivery', color: 'bg-violet-100 text-violet-800 border-violet-200' },
-  { value: 'delivered',        label: 'ডেলিভারড',        en: 'Delivered',        color: 'bg-green-100 text-green-800 border-green-200' },
-  { value: 'cancelled',        label: 'ক্যানসেল',        en: 'Cancelled',        color: 'bg-red-100 text-red-800 border-red-200' },
-  { value: 'returned',         label: 'রিটার্নড',        en: 'Returned',         color: 'bg-orange-100 text-orange-800 border-orange-200' },
-  { value: 'refunded',         label: 'রিফান্ডেড',       en: 'Refunded',         color: 'bg-rose-100 text-rose-800 border-rose-200' },
+const STATUS_OPTIONS: { value: OrderStatus; label: string; color: string }[] = [
+  { value: 'pending',          label: 'পেন্ডিং',       color: 'bg-amber-100 text-amber-800 border-amber-200' },
+  { value: 'confirmed',        label: 'কনফার্মড',       color: 'bg-blue-100 text-blue-800 border-blue-200' },
+  { value: 'processing',       label: 'প্রসেসিং',       color: 'bg-sky-100 text-sky-800 border-sky-200' },
+  { value: 'packed',           label: 'প্যাকড',         color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+  { value: 'shipped',          label: 'শিপড',           color: 'bg-purple-100 text-purple-800 border-purple-200' },
+  { value: 'out_for_delivery', label: 'ডেলিভারিতে',    color: 'bg-violet-100 text-violet-800 border-violet-200' },
+  { value: 'delivered',        label: 'ডেলিভারড',       color: 'bg-green-100 text-green-800 border-green-200' },
+  { value: 'cancelled',        label: 'ক্যানসেল',       color: 'bg-red-100 text-red-800 border-red-200' },
+  { value: 'returned',         label: 'রিটার্নড',       color: 'bg-orange-100 text-orange-800 border-orange-200' },
+  { value: 'refunded',         label: 'রিফান্ডেড',      color: 'bg-rose-100 text-rose-800 border-rose-200' },
 ]
 
 function statusMeta(s?: OrderStatus) {
@@ -28,9 +28,7 @@ function statusMeta(s?: OrderStatus) {
 function formatDate(iso?: string) {
   if (!iso) return '—'
   const d = new Date(iso)
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const dd = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${mm}-${dd}`
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 export default function AdminOrdersPage() {
@@ -46,7 +44,18 @@ export default function AdminOrdersPage() {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: OrderStatus }) => updateOrderStatus(id, status),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'orders'] }),
+    onSuccess: (_, { id, status }) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'orders'] })
+      setSelected((prev) => prev?.id === id ? { ...prev, status } : prev)
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteOrder(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'orders'] })
+      setSelected(null)
+    },
   })
 
   const orders = data ?? []
@@ -84,9 +93,6 @@ export default function AdminOrdersPage() {
         <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-5 text-sm text-destructive">
           <p className="font-medium mb-1">অর্ডার লোড করতে সমস্যা হয়েছে</p>
           <p className="text-destructive/80 text-xs">{error instanceof Error ? error.message : 'অজানা ত্রুটি'}</p>
-          <p className="font-mono text-[10px] mt-2 text-destructive/70">
-            Check that <code>GET {process.env.NEXT_PUBLIC_API_URL}/admin/orders</code> exists.
-          </p>
         </div>
       )}
 
@@ -144,13 +150,18 @@ export default function AdminOrdersPage() {
         </div>
       )}
 
-      {/* Order detail drawer */}
       {selected && (
-        <OrderDetail
+        <OrderModal
           order={selected}
           onClose={() => setSelected(null)}
           onStatusChange={(status) => updateMutation.mutate({ id: selected.id, status })}
           updating={updateMutation.isPending}
+          onDelete={() => {
+            if (confirm(`অর্ডার #${selected.id.slice(0, 8)} ডিলিট করবেন?`)) {
+              deleteMutation.mutate(selected.id)
+            }
+          }}
+          deleting={deleteMutation.isPending}
         />
       )}
     </div>
@@ -162,52 +173,69 @@ function FilterPill({ active, onClick, label, count }: { active: boolean; onClic
     <button
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors ${
-        active
-          ? 'bg-foreground text-background'
-          : 'bg-card border border-border text-foreground/75 hover:border-foreground/30'
+        active ? 'bg-foreground text-background' : 'bg-card border border-border text-foreground/75 hover:border-foreground/30'
       }`}
     >
       {label}
-      <span className={`font-mono text-[10px] ${active ? 'text-background/70' : 'text-foreground/50'}`}>
-        {toBn(count)}
-      </span>
+      <span className={`font-mono text-[10px] ${active ? 'text-background/70' : 'text-foreground/50'}`}>{toBn(count)}</span>
     </button>
   )
 }
 
-function OrderDetail({
+function OrderModal({
   order,
   onClose,
   onStatusChange,
   updating,
+  onDelete,
+  deleting,
 }: {
   order: AdminOrder
   onClose: () => void
   onStatusChange: (s: OrderStatus) => void
   updating: boolean
+  onDelete: () => void
+  deleting: boolean
 }) {
+  const currentStatus = (order.status ?? 'pending') as OrderStatus
+
   return (
-    <div className="fixed inset-0 z-50 flex">
-      <button aria-label="বন্ধ" onClick={onClose} className="flex-1 bg-foreground/40" />
-      <aside className="w-full max-w-md bg-card h-full overflow-y-auto border-l border-border/60">
-        <div className="sticky top-0 bg-card border-b border-border/60 px-5 py-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <button className="absolute inset-0 bg-foreground/40" onClick={onClose} aria-label="বন্ধ" />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-lg bg-card rounded-2xl border border-border/60 shadow-xl overflow-hidden max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border/60 shrink-0">
           <div className="leading-tight">
             <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50">Order</p>
             <p className="font-mono text-sm text-foreground">#{order.id.slice(0, 12)}</p>
           </div>
-          <button onClick={onClose} className="w-9 h-9 rounded-lg hover:bg-muted flex items-center justify-center" aria-label="বন্ধ">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onDelete}
+              disabled={deleting}
+              className="w-9 h-9 rounded-lg hover:bg-destructive/10 text-destructive flex items-center justify-center disabled:opacity-50 transition-colors"
+              aria-label="ডিলিট"
+            >
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            </button>
+            <button onClick={onClose} className="w-9 h-9 rounded-lg hover:bg-muted flex items-center justify-center transition-colors" aria-label="বন্ধ">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        <div className="p-5 space-y-6">
+        {/* Body */}
+        <div className="overflow-y-auto p-6 space-y-5">
           {/* Customer */}
           <section>
             <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50 mb-2">Customer</p>
             <p className="font-display text-lg font-medium text-foreground">{order.fullName}</p>
             <div className="mt-2 space-y-1.5 text-sm">
               <p className="flex items-center gap-2 text-foreground/75">
-                <Phone className="w-3.5 h-3.5 text-foreground/40" />
+                <Phone className="w-3.5 h-3.5 text-foreground/40 shrink-0" />
                 <a href={`tel:${order.phone}`} className="font-mono text-xs hover:text-primary">{order.phone}</a>
               </p>
               <p className="flex items-start gap-2 text-foreground/75">
@@ -227,7 +255,7 @@ function OrderDetail({
               </div>
               <div className="flex justify-between">
                 <span className="text-foreground/60">Date</span>
-                <span className="font-mono text-xs">{order.deliveryDate}</span>
+                <span className="font-mono text-xs">{order.deliveryDate ?? '—'}</span>
               </div>
               {order.notes && (
                 <div className="pt-2 border-t border-border/60">
@@ -261,34 +289,22 @@ function OrderDetail({
           {/* Status */}
           <section>
             <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-foreground/50 mb-2">Status</p>
-            <div className="grid grid-cols-2 gap-2">
-              {STATUS_OPTIONS.map((s) => {
-                const active = (order.status ?? 'pending') === s.value
-                return (
-                  <button
-                    key={s.value}
-                    disabled={updating || active}
-                    onClick={() => onStatusChange(s.value)}
-                    className={`text-left px-3 py-2 rounded-lg border text-sm transition-colors ${
-                      active
-                        ? 'bg-foreground text-background border-foreground'
-                        : 'bg-card border-border hover:border-foreground/30 disabled:opacity-60'
-                    }`}
-                  >
-                    <p className="font-medium">{s.label}</p>
-                    <p className={`font-mono text-[9px] tracking-[0.14em] uppercase mt-0.5 ${active ? 'text-background/70' : 'text-foreground/50'}`}>{s.en}</p>
-                  </button>
-                )
-              })}
+            <div className="flex items-center gap-3">
+              <select
+                value={currentStatus}
+                disabled={updating}
+                onChange={(e) => onStatusChange(e.target.value as OrderStatus)}
+                className="flex-1 px-3 py-2.5 rounded-lg border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 disabled:opacity-60"
+              >
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s.value} value={s.value}>{s.label}</option>
+                ))}
+              </select>
+              {updating && <Loader2 className="w-4 h-4 animate-spin text-foreground/40 shrink-0" />}
             </div>
-            {updating && (
-              <p className="mt-3 text-xs text-foreground/60 inline-flex items-center gap-2">
-                <Loader2 className="w-3 h-3 animate-spin" /> আপডেট হচ্ছে…
-              </p>
-            )}
           </section>
         </div>
-      </aside>
+      </div>
     </div>
   )
 }

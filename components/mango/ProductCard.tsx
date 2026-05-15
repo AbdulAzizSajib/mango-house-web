@@ -124,7 +124,7 @@ export default function ProductCard({
       </div>
 
       {/* ── Body ── */}
-      <div className="p-5 sm:p-6">
+      <div className="px-5 py-4 sm:py-4 sm:px-6">
         {/* FIX: location uses lucide MapPin — no hardcoded SVG fill color */}
         <div className="flex items-center justify-between text-[12px] uppercase tracking-wider text-muted-foreground font-medium mb-2.5">
           <span className="flex items-center gap-1">
@@ -134,16 +134,16 @@ export default function ProductCard({
           <span>{product.category}</span>
         </div>
 
-        <h3 className="font-display text-2xl sm:text-3xl font-medium text-foreground leading-tight mb-2">
+        <h3 className="font-display text-2xl sm:text-3xl font-medium text-foreground leading-tight mb-1">
           {product.name}
         </h3>
 
-        <p className="text-sm text-foreground/65 leading-relaxed mb-4 line-clamp-3">
+        <p className="text-sm text-foreground/65 leading-relaxed mb-2 line-clamp-3">
           {product.description}
         </p>
 
         {/* Price row */}
-        <div className="flex items-baseline justify-between mb-5 pb-5 border-b border-border/70">
+        <div className="flex items-baseline justify-between mb-2">
           <div className="flex items-baseline gap-2">
             <p className="font-display text-3xl font-medium text-foreground">
               <span className="text-xl">৳ </span>
@@ -177,13 +177,13 @@ export default function ProductCard({
             <select
               value={quantity}
               onChange={(e) => onUpdateQuantity(Number(e.target.value))}
-              className={`w-full font-display appearance-none cursor-pointer rounded-xl border-2 px-4 py-3 pr-11 font-medium text-base focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all ${
+              className={`w-full font-display appearance-none cursor-pointer rounded-lg border-2 px-4 py-2 pr-11 font-medium text-base focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all ${
                 isSelected
                   ? "border-primary bg-primary/5 text-foreground"
                   : "border-border bg-card text-foreground hover:border-foreground/30"
               }`}
             >
-              {!isSelected && <option value={0}>পরিমাণ বেছে নিন</option>}
+              {!isSelected && <option value={0}>পরিমাণ নির্ধারণ করুন</option>}
               {QUANTITY_OPTIONS.map((qty) => (
                 <option key={qty} value={qty} className="font-display">
                   {qty} কেজি — ৳{(pricePerKg * qty).toLocaleString("bn-BD")}
@@ -202,7 +202,7 @@ export default function ProductCard({
               onClick={() => onUpdateQuantity(0)}
               title="কার্ট থেকে সরান"
               aria-label="কার্ট থেকে সরান"
-              className="w-11 h-11 flex items-center justify-center rounded-xl border border-destructive/30 text-destructive hover:bg-destructive/8 active:scale-95 transition-all"
+              className="w-11 h-11 flex items-center justify-center rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/8 active:scale-95 transition-all"
             >
               <Trash2 className="w-4 h-4" />
             </button>

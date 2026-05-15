@@ -156,6 +156,10 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
   })
 }
 
+export async function deleteOrder(id: string): Promise<void> {
+  await authFetch(`/orders/${id}`, { method: 'DELETE' })
+}
+
 // ─── Hero Banners ─────────────────────────────────────────────────────────────
 
 export interface HeroBanner {
